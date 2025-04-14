@@ -27,6 +27,9 @@ dependencies {
     implementation 'org.springframework.ai:spring-ai-postgresml-spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+
 }
 
 dependencyManagement {
@@ -38,3 +41,8 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-parameters"
+}
+
