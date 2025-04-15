@@ -37,16 +37,7 @@ public class UserController {
     }
 
     // UPDATE
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        return userRepo.findById(id)
-                .map(user -> {
-                    user.setName(userDetails.getName());
-                    user.setEmail(userDetails.getEmail());
-                    return ResponseEntity.ok(userRepo.save(user));
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
+
 
     // DELETE
     @DeleteMapping("/{id}")
