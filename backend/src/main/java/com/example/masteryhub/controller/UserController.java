@@ -1,7 +1,7 @@
 package com.example.masteryhub.controller;
 
-import com.example.masteryhub.Entity.User;
-import com.example.masteryhub.Repository.UserRepository;
+import com.example.masteryhub.models.User;
+import com.example.masteryhub.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.example.masteryhub.Entity;
+package com.example.masteryhub.models;
 
 public enum AuthProvider {
     MANUAL,

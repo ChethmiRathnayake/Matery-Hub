@@ -4,10 +4,9 @@ package com.example.masteryhub.controller;
 
 import com.example.masteryhub.DTO.AuthCredentialRequest;
 import com.example.masteryhub.DTO.RegisterRequest;
-import com.example.masteryhub.Entity.User;
+import com.example.masteryhub.models.User;
 import com.example.masteryhub.config.JwtUtils;
 import com.example.masteryhub.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,11 +17,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")

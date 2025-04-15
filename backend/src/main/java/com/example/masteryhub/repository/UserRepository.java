@@ -1,6 +1,6 @@
-package com.example.masteryhub.Repository;
+package com.example.masteryhub.repository;
 
-import com.example.masteryhub.Entity.User;
+import com.example.masteryhub.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

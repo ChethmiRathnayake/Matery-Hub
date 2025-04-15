@@ -1,10 +1,10 @@
 package com.example.masteryhub.service;
 
 import com.example.masteryhub.DTO.RegisterRequest;
-import com.example.masteryhub.Entity.User;
-import com.example.masteryhub.Entity.UserProfile;
-import com.example.masteryhub.Repository.UserProfileRepository;
-import com.example.masteryhub.Repository.UserRepository;
+import com.example.masteryhub.models.User;
+import com.example.masteryhub.models.UserProfile;
+import com.example.masteryhub.repository.UserProfileRepository;
+import com.example.masteryhub.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

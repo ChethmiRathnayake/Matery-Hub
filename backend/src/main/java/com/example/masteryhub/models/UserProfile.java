@@ -1,4 +1,4 @@
-package com.example.masteryhub.Entity;
+package com.example.masteryhub.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
