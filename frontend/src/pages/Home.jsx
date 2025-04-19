@@ -1,15 +1,37 @@
-import React, { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-function Home() {
+
+const Home = () => {
     const { user } = useContext(AuthContext);
-    console.log(user)
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user) {
+            navigate("/user"); // Redirect to dashboard if logged in
+        }
+    }, [user, navigate]);
+
     return (
         <div>
-            <h1>Welcome, {user?.username}</h1>
-            <p>Email: {user?.email}</p>
+             {/* Common navbar */}
+            <div className="home-container">
+                <h1>Welcome to Our Platform</h1>
+                {!user ? (
+                    <>
+                        <button onClick={() => navigate("/login")}>Sign In</button>
+                        <button onClick={() => navigate("/signup")}>Sign Up</button>
+                    </>
+                ) : (
+                    <div>
+                        <h2>Welcome back, {user.username}!</h2>
+                        <button onClick={() => navigate("/user")}>Go to Dashboard</button>
+                    </div>
+                )}
+            </div>
         </div>
     );
-}
+};
 
 export default Home;

@@ -1,7 +1,9 @@
-package com.example.masteryhub.DTO;
+package com.example.masteryhub.DTO.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.Set;
 
 public class RegisterRequest {
     @Email(message = "Please provide a valid email address")
@@ -26,7 +28,7 @@ public class RegisterRequest {
 
     private String profilePictureUrl; // Optional
 
-
+    private Set<String> role;
     public String getEmail() {
         return email;
     }
@@ -81,6 +83,15 @@ public class RegisterRequest {
 
     public void setProfilePictureUrl(String profilePictureUrl) {
         this.profilePictureUrl = profilePictureUrl;
+    }
+
+
+    public Set<String> getRole() {
+        return role;
+    }
+
+    public void setRole(Set<String> role) {
+        this.role = role;
     }
 }
 

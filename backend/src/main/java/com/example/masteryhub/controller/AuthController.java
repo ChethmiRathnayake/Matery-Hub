@@ -2,8 +2,9 @@ package com.example.masteryhub.controller;
 
 
 
-import com.example.masteryhub.DTO.AuthCredentialRequest;
-import com.example.masteryhub.DTO.RegisterRequest;
+import com.example.masteryhub.DTO.request.AuthCredentialRequest;
+import com.example.masteryhub.DTO.request.RegisterRequest;
+import com.example.masteryhub.DTO.response.JwtResponse;
 import com.example.masteryhub.models.User;
 import com.example.masteryhub.config.JwtUtils;
 import com.example.masteryhub.service.UserService;
@@ -20,8 +21,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
@@ -50,14 +54,18 @@ public class AuthController {
 
             User user = (User) authentication.getPrincipal();
 
-            //String jwt = jwtUtils.generateJwtToken
+            String jwt = jwtUtils.generateJwtToken(user);
             user.setPassword(null);
-            return ResponseEntity.ok()
-                    .header(
-                            HttpHeaders.AUTHORIZATION,
-                            jwtUtils.generateJwtToken(user)
-                    )
-                    .body(user);
+            List<String> roles = user.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                                                 user.getId(),
+                                                 user.getUsername(),
+                                                   user.getEmail(),
+                                              roles
+                            ));
+
         } else {
             return ResponseEntity.badRequest().body(response);
         }
@@ -82,16 +90,19 @@ public class AuthController {
 
                 User user = (User) auth.getPrincipal(); // Only if your User implements UserDetails
 
-                String token = jwtUtils.generateJwtToken(user); // Works if 'user' is UserDetails
+                String jwt = jwtUtils.generateJwtToken(user); // Works if 'user' is UserDetails
 
                 user.setPassword(null); // Never return password
+                List<String> roles = user.getAuthorities().stream()
+                        .map(item -> item.getAuthority())
+                        .collect(Collectors.toList());
 
-                return ResponseEntity.ok()
-                        .header(
-                                HttpHeaders.AUTHORIZATION,
-                                jwtUtils.generateJwtToken(user)
-                        )
-                        .body(user);
+                return ResponseEntity.ok(new JwtResponse(jwt,
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        roles
+                ));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
             }
