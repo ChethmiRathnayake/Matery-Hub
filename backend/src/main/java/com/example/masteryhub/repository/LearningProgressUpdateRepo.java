@@ -1,7 +1,6 @@
 package com.example.masteryhub.repository;
 
 import com.example.masteryhub.models.LearningProgressUpdate;
-import com.example.masteryhub.models.LearningProgressUpdate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
