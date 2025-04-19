@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Login({ setUser }) {
@@ -6,7 +6,34 @@ function Login({ setUser }) {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
+    const [jwt, setJwt] = useState("");
 
+
+    useEffect(()=> {
+        if(!jwt){
+        const reqBody = {
+            username: "Ramla",
+            password: "1234",
+        };
+
+        fetch("http://localhost:1010/auth/login", {
+
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify(reqBody),
+        })
+            .then((response) => Promise.all([response.json(), response.headers]))
+            .then(([body, headers]) => {
+                setJwt(headers.get("authorization"));
+                //console.log(authValue);
+                console.log(body);
+
+            })
+    }
+    }, [] );
     const handleLogin = async (e) => {
         e.preventDefault();
 
@@ -21,7 +48,7 @@ function Login({ setUser }) {
             });
 
             console.log((response.json()));
-
+            console.log((response.headers));
 
             if (response.ok) {
                 setMessage("Login successful ✅");
