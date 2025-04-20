@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class LearningProgressUpdateService {
 
     private final UserRepository userRepository;
-    private LearningProgressUpdateRepo progUpdateRepo;
+    private final LearningProgressUpdateRepo progUpdateRepo;
 
     public List<LearningProgressUpdateResponse> getAllProgressUpdateDtos() {
         return progUpdateRepo.findAll()
