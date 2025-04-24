@@ -27,11 +27,21 @@ function App() {
                 {/* Protected Route: User Dashboard (only for logged-in users) */}
                 <Route
                     path="/user"
-                    element={<ProtectedRoute element={<UserPage />} roles={['ROLE_USER']} />}
+                    element={<ProtectedRoute element={<Layout><UserPage /></Layout>} roles={['ROLE_USER']} />}
                 />
                 <Route
                     path="/progress/new"
-                    element={<Layout><LearningProgress /></Layout>} />
+                    element={
+                        <ProtectedRoute
+                            element={
+                                <Layout>
+                                    <LearningProgress />
+                                </Layout>
+                            }
+                            roles={['ROLE_USER']}
+                        />
+                    }
+                />
 
                 {/* Optionally add more protected routes for other roles (e.g., admin) */}
                 {/* <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} roles={['ROLE_ADMIN']} />} /> */}
