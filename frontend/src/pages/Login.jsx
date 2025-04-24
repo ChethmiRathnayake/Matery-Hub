@@ -12,7 +12,7 @@ function Login({ setUser }) {
     useEffect(()=> {
         if(!jwt){
         const reqBody = {
-            username: "Ramla",
+            username: "DavidM",
             password: "1234",
         };
 
