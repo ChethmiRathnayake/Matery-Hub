@@ -1,0 +1,62 @@
+.learning-progress {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    font-family: Arial, sans-serif;
+}
+
+.learning-progress h2 {
+    font-size: 24px;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.learning-progress label {
+    display: block;
+    font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    color: #444;
+}
+
+.learning-progress select,
+.learning-progress input[type="text"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.input-group .form-field {
+    margin-bottom: 1rem;
+}
+
+.generated-message {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-left: 4px solid #4f46e5;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.learning-progress button {
+    padding: 0.6rem 1.2rem;
+    font-size: 14px;
+    background-color: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.learning-progress button:hover {
+    background-color: #4338ca;
+}

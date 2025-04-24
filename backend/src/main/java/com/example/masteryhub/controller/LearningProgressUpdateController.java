@@ -1,6 +1,6 @@
 package com.example.masteryhub.controller;
 
-import com.example.masteryhub.DTO.LearningProgressUpdateResponse;
+import com.example.masteryhub.DTO.response.LearningProgressUpdateResponse;
 import com.example.masteryhub.models.LearningProgressUpdate;
 import com.example.masteryhub.models.User;
 import com.example.masteryhub.service.LearningProgressUpdateService;
