@@ -1,5 +1,6 @@
 package com.example.masteryhub.service;
 
+import com.example.masteryhub.DTO.request.ChangePasswordRequest;
 import com.example.masteryhub.DTO.request.RegisterRequest;
 import com.example.masteryhub.models.ERole;
 import com.example.masteryhub.models.Role;
@@ -92,6 +93,19 @@ public class UserService {
 
         userRepository.save(user);
         return "User registered successfully";
+    }
+
+
+    public void changePassword(Long userId, ChangePasswordRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
 //    public User findUserByEmail(String email){
