@@ -1,4 +1,4 @@
-package com.example.masteryhub.DTO;
+package com.example.masteryhub.DTO.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

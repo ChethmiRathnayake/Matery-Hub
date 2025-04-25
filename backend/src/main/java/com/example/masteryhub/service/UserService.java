@@ -1,13 +1,19 @@
 package com.example.masteryhub.service;
 
-import com.example.masteryhub.DTO.RegisterRequest;
+import com.example.masteryhub.DTO.request.RegisterRequest;
+import com.example.masteryhub.models.ERole;
+import com.example.masteryhub.models.Role;
 import com.example.masteryhub.models.User;
 import com.example.masteryhub.models.UserProfile;
+import com.example.masteryhub.repository.RoleRepository;
 import com.example.masteryhub.repository.UserProfileRepository;
 import com.example.masteryhub.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -16,12 +22,15 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserProfileRepository userProfileRepository;
     public String registerUser(RegisterRequest request) {
-        System.out.println("User received: " + request.getUsername() + " " +request.getEmail() + " "+ request.getPassword());
+        System.out.println("User received: " + request.getUsername() + " " +request.getEmail() + " "+ request.getPassword() + " " +request.getRole());
         if (userRepository.existsByEmail(request.getEmail())) {
             return "Email is already in use!";
         }
@@ -39,8 +48,38 @@ public class UserService {
         user.setPassword(hashedPassword);
         user.setUsername(request.getUsername());
 
+        Set<String> strRoles = request.getRole();
+        Set<Role>  roles= new HashSet<>();
+
+        if (strRoles == null) {
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            roles.add(userRole);
+        } else {
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "admin":
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(adminRole);
+
+                        break;
+                    case "mod":
+                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(modRole);
+
+                        break;
+                    default:
+                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        roles.add(userRole);
+                }
+            });
+        }
 
 
+        user.setRoles(roles);
 
         UserProfile userProfile = new UserProfile();
         userProfile.setUser(user);

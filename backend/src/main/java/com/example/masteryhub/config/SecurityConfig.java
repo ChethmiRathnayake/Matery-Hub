@@ -1,9 +1,7 @@
 package com.example.masteryhub.config;
 
+
 import com.example.masteryhub.service.CustomUserDetailsService;
-import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -13,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -33,14 +32,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ use this instead of .and().cors()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated()
+
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .formLogin(formLogin -> formLogin.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+
 
 
 
@@ -50,16 +52,32 @@ public class SecurityConfig {
     }
 
 
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtUtils(), customUserDetailsService());
+    }
+
+    @Bean
+    public JwtUtils jwtUtils() {
+        return new JwtUtils();
+    }
+
+    @Bean
+    public CustomUserDetailsService customUserDetailsService() {
+        return new CustomUserDetailsService();
+    }
+
 
 
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000","http://localhost:3002"));
         config.setAllowCredentials(true);
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setExposedHeaders(List.of("Authorization"));
 
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
