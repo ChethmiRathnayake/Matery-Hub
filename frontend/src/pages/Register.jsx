@@ -21,7 +21,7 @@ function Signup() {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem("token", data.token); // Store JWT
-            history("/home"); // Navigate to home
+            history("/progress/new"); // Navigate to home
         } else {
             const error = await response.text();
             alert(error);
