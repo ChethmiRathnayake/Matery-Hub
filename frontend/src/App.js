@@ -15,7 +15,9 @@ function App() {
 
             <Routes>
                 {/* Public Route: Default home page */}
-                <Route path="/" element={<Home />} />
+                <Route
+                    path="/"
+                    element={<Layout><Home /></Layout>} />
 
                 {/* Public Route: Login page */}
                 <Route path="/login" element={<SignIn />} />

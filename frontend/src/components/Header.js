@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import "./Header.css";
 import { FaSearch, FaBell, FaUserCircle } from "react-icons/fa";
 
@@ -16,7 +17,9 @@ const Header = () => {
 
             <div className="nav-icons">
                 <FaBell className="icon" />
-                <FaUserCircle className="icon" />
+                <Link to="/user">
+                    <FaUserCircle className="icon"/>
+                </Link>
             </div>
         </header>
     );
