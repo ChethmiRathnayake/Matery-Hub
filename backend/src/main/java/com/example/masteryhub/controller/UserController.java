@@ -1,9 +1,14 @@
 package com.example.masteryhub.controller;
 
+import com.example.masteryhub.DTO.request.ChangePasswordRequest;
 import com.example.masteryhub.models.User;
 import com.example.masteryhub.repository.UserRepository;
+import com.example.masteryhub.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +20,10 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepo;
+
+
+    @Autowired
+    private UserService userService;
 
     // CREATE
     @PostMapping
@@ -48,5 +57,18 @@ public class UserController {
                     return ResponseEntity.ok().build();
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+
+    @PutMapping("/me/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody @Valid ChangePasswordRequest request, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+
+        try {
+            userService.changePassword(user.getId(), request);
+            return ResponseEntity.ok("Password changed successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
