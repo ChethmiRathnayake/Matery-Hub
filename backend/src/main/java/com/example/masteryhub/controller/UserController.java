@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -26,10 +28,10 @@ public class UserController {
     private UserService userService;
 
     // CREATE
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userRepo.save(user);
-    }
+//    @PostMapping
+//    public User createUser(@RequestBody User user) {
+//        return userRepo.save(user);
+//    }
 
     // READ ALL
     @GetMapping
@@ -46,6 +48,38 @@ public class UserController {
     }
 
     // UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userRepo.findById(id)
+                .map(existingUser -> {
+                    existingUser.setUsername(user.getUsername());
+                    existingUser.setEmail(user.getEmail());
+                    // any other fields to update
+                    return ResponseEntity.ok(userRepo.save(existingUser));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<?> updateUser(@RequestBody @Valid User updatedUser, Authentication authentication) {
+        User authenticatedUser = (User) authentication.getPrincipal();
+        Long userId = authenticatedUser.getId(); // Get the authenticated user's ID
+
+        // Ensure the user ID from the request matches the authenticated user's ID
+        if (!userId.equals(updatedUser.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only update your own account.");
+        }
+
+        // Perform the update in the service layer
+        try {
+            User updatedUserData = userService.updateUser(userId, updatedUser);
+            return ResponseEntity.ok(updatedUserData);  // Return the updated user details
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());  // Handle any errors
+        }
+    }
+
+
 
 
     // DELETE
@@ -71,4 +105,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+
 }

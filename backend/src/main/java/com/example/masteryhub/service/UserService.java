@@ -102,6 +102,11 @@ public class UserService {
         return "User registered successfully";
     }
 
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
 
     public void changePassword(Long userId, ChangePasswordRequest request) {
         User user = userRepository.findById(userId)
@@ -141,6 +146,25 @@ public class UserService {
 
         return "If the email exists, a reset link will be sent.";
     }
+
+    public User updateUser(Long userId, User updatedUser) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Update user fields with the provided information
+        if (updatedUser.getUsername() != null) {
+            user.setUsername(updatedUser.getUsername());
+        }
+        if (updatedUser.getEmail() != null) {
+            user.setEmail(updatedUser.getEmail());
+        }
+
+        // You can add more fields based on what needs to be updated
+
+        // Save the updated user back to the repository
+        return userRepository.save(user);
+    }
+
 
     public String resetPassword(String token, String newPassword) {
         PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token)
