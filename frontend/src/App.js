@@ -1,7 +1,9 @@
 import React from 'react';
+import './index.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Signup from './pages/Register';
 import Home from './pages/Home';
+import Test from './pages/test'
 
 import UserPage from "./pages/UserPage";
 import SignIn from "./pages/SignIn";
@@ -9,7 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import LearningProgress from "./pages/LearningProgress"; // relative path from pages/
 import Layout from "./components/Layout"; //
 import Unauthorized from "./pages/Unauthorized"
-
+import Profile from "./pages/Profile";
 function App() {
     return (
 
@@ -22,6 +24,7 @@ function App() {
                 {/* Public Route: Login page */}
                 <Route path="/login" element={<SignIn />} />
 
+                <Route path="/test" element={<Test />} />
                 {/* Public Route: Sign-Up page */}
                 <Route path="/signup" element={<Signup />} />
 
@@ -30,6 +33,10 @@ function App() {
                 <Route
                     path="/user"
                     element={<ProtectedRoute element={<Layout><UserPage /></Layout>} roles={['ROLE_USER']} />}
+                />
+                <Route
+                    path="/profile"
+                    element={<ProtectedRoute element={<Layout><Profile /></Layout>} roles={['ROLE_USER']} />}
                 />
                 <Route
                     path="/progress/new"

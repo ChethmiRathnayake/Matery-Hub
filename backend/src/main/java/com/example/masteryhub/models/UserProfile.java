@@ -26,12 +26,12 @@ public class UserProfile {
     private String bannerImageUrl;
 
     @ElementCollection
-    @CollectionTable(name = "user_interests", joinColumns = @JoinColumn(name = "user_profile_id"))
+    @CollectionTable(name = "user_profile_interests", joinColumns = @JoinColumn(name = "user_profile_id"))
     @Column(name = "interest")
     private List<String> interests;
 
     @ElementCollection
-    @CollectionTable(name = "user_skills", joinColumns = @JoinColumn(name = "user_profile_id"))
+    @CollectionTable(name = "user_profile_skills", joinColumns = @JoinColumn(name = "user_profile_id"))
     @Column(name = "skill")
     private List<String> skills;
 
@@ -44,7 +44,7 @@ public class UserProfile {
 
     @ElementCollection
     @CollectionTable(
-            name = "user_social_links",
+            name = "user_profile_social_links",
             joinColumns = @JoinColumn(name = "user_profile_id")
     )
     @MapKeyColumn(name = "platform")
