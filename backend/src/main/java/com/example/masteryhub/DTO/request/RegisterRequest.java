@@ -24,7 +24,7 @@ public class RegisterRequest {
     @NotBlank(message = "Last Name is mandatory")
     private String lastName;
 
-    private String bio; // Optional
+    private String bio;
 
     private String profilePictureUrl; // Optional
 

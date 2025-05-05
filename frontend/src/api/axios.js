@@ -1,23 +1,10 @@
 import axios from "axios";
+const BASE_URL='http://100.120.106.127:1010/api'
 
-const BASE_URL = "http://localhost:1010/api";
-
-const apiClient = axios.create({
-    baseURL: BASE_URL,
+export default axios.create({
+    baseURL: "http://100.120.106.127:1010/api",
     headers: {
         "Content-Type": "application/json"
     }
 });
 
-apiClient.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem("authToken");
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
-
-export default apiClient;
