@@ -43,7 +43,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registrationDto) {
-
+         System.out.println(registrationDto.getBio());
         String response = userService.registerUser(registrationDto);
         if (response.equals("User registered successfully")) {
 
@@ -123,14 +123,15 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestBody ResetPasswordRequest request) {
         try {
-            String result = userService.resetPassword(request.getToken(), request.getNewPassword());
+            String result = userService.resetPassword(token, request.getNewPassword());
             return ResponseEntity.ok(result);
         } catch (RuntimeException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
+
 
 }
 

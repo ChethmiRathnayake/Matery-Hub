@@ -4,14 +4,18 @@ package com.example.masteryhub.controller;
 import com.example.masteryhub.DTO.request.UserProfileRequest;
 import com.example.masteryhub.hateoas.UserProfileHateoasHelper;
 import com.example.masteryhub.models.User;
+import com.example.masteryhub.service.FileUploadService;
 import com.example.masteryhub.service.UserProfileService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -20,6 +24,9 @@ import java.util.List;
 public class UserProfileController {
 
     private final UserProfileService service;
+
+    @Autowired
+    private FileUploadService fileUploadService;
 
     public UserProfileController(UserProfileService service) {
         this.service = service;
@@ -66,5 +73,37 @@ public class UserProfileController {
         Long id = userDetails.getId();
         service.deleteProfile(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{userId}/profile-picture")
+    public ResponseEntity<?> uploadProfilePicture(@PathVariable Long userId,
+                                                  @RequestParam("file") MultipartFile file) {
+        try {
+            // Upload the profile picture and get the file name
+            String fileName = fileUploadService.uploadFile(file);
+
+            // Update the user's profile with the new profile picture URL (relative path)
+            UserProfileRequest updatedProfile = service.updateProfilePicture(userId, fileName);
+
+            return ResponseEntity.ok(updatedProfile);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error uploading file");
+        }
+    }
+
+    @PostMapping("/{userId}/banner-image")
+    public ResponseEntity<?> uploadBannerImage(@PathVariable Long userId,
+                                               @RequestParam("file") MultipartFile file) {
+        try {
+            // Upload the banner image and get the file name
+            String fileName = fileUploadService.uploadFile(file);
+
+            // Update the user's profile with the new banner image URL (relative path)
+            UserProfileRequest updatedProfile = service.updateBannerImage(userId, fileName);
+
+            return ResponseEntity.ok(updatedProfile);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error uploading file");
+        }
     }
 }
