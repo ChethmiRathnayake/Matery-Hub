@@ -17,18 +17,8 @@ const Home = () => {
         <div>
              {/* Common navbar */}
             <div className="home-container">
-                <h1>Welcome to Our Platform</h1>
-                {!user ? (
-                    <>
-                        <button onClick={() => navigate("/login")}>Sign In</button>
-                        <button onClick={() => navigate("/signup")}>Sign Up</button>
-                    </>
-                ) : (
-                    <div>
-                        <h2>Welcome back, {user.username}!</h2>
-                        <button onClick={() => navigate("/user")}>Go to Dashboard</button>
-                    </div>
-                )}
+                <h1>Mastery Hub develop your skills</h1>
+
             </div>
         </div>
     );

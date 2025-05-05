@@ -1,15 +1,14 @@
 package com.example.masteryhub.models;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")  // Avoid using reserved keywords like "user" in some DBs
@@ -46,6 +45,19 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+
+
+
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("following-ref")
+    private Set<Follow> following = new HashSet<>();  // Users that the current user follows
+
+    @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("followers-ref")
+    private Set<Follow> followers = new HashSet<>();  // Users who follow the current user
+
 
     @PrePersist
     protected void onCreate() {
@@ -168,5 +180,30 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+
+    public Set<Follow> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(Set<Follow> following) {
+        this.following = following;
+    }
+
+    public Set<Follow> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(Set<Follow> followers) {
+        this.followers = followers;
+    }
+
+    public long getFollowingCount() {
+        return following.size();  // Returns the count of users the current user is following
+    }
+
+    public long getFollowersCount() {
+        return followers.size();  // Returns the count of users following the current user
     }
 }
