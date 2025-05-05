@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./LearningProgress.css";
+import axios from "axios";
 
 const templates = [
     {
@@ -25,43 +26,99 @@ const templates = [
 const LearningProgress = () => {
     const [selectedTemplate, setSelectedTemplate] = useState(templates[0]);
     const [formData, setFormData] = useState({});
+    const [mediaUrls, setMediaUrls] = useState([""]);
+    const [tags, setTags] = useState([""]);
 
+    // Handle dynamic inputs for placeholders
     const handleInputChange = (key, value) => {
-        setFormData({ ...formData, [key]: value });
+        setFormData((prev) => ({ ...prev, [key]: value }));
     };
 
+    // Handle media URLs array inputs
+    const handleMediaUrlChange = (index, value) => {
+        const newMediaUrls = [...mediaUrls];
+        newMediaUrls[index] = value;
+        setMediaUrls(newMediaUrls);
+    };
+
+    const addMediaUrl = () => {
+        setMediaUrls((prev) => [...prev, ""]);
+    };
+
+    const removeMediaUrl = (index) => {
+        setMediaUrls((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    // Handle tags array inputs
+    const handleTagChange = (index, value) => {
+        const newTags = [...tags];
+        newTags[index] = value;
+        setTags(newTags);
+    };
+
+    const addTag = () => {
+        setTags((prev) => [...prev, ""]);
+    };
+
+    const removeTag = (index) => {
+        setTags((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    // Generate message by replacing placeholders in body
     const generateMessage = () => {
         let message = selectedTemplate.body;
         selectedTemplate.placeholders.forEach((key) => {
-            message = message.replace(`{${key}}`, formData[key] || "...");
+            const val = formData[key] || "...";
+            message = message.replace(new RegExp(`{${key}}`, "g"), val);
         });
         return message;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const payload = {
-            userId: 1, // replace with logged-in user ID
+            userId: 1, // Replace with actual user id
             templateId: selectedTemplate.id,
             placeholders: formData,
-            mediaUrls: [],
-            tags: []
+            mediaUrls: mediaUrls.filter((url) => url.trim() !== ""),
+            tags: tags.filter((tag) => tag.trim() !== ""),
         };
-        console.log("Submit Payload:", payload);
-        // Use fetch or axios to POST this to your backend
+
+        try {
+            const response = await axios.post("http://localhost:1010/api/progress-updates", payload);
+            console.log("Successfully posted:", response.data);
+            alert("Learning progress update posted successfully!");
+
+            setFormData({});
+            setMediaUrls([""]);
+            setTags([""]);
+        } catch (error) {
+            console.error("Post error:", error.response || error.message);
+            alert(
+                "Failed to post progress update: " +
+                (error.response?.data?.message || error.message)
+            );
+        }
+    };
+
+
+
+
+    // Reset form data when template changes
+    const handleTemplateChange = (e) => {
+        const template = templates.find((t) => t.id === e.target.value);
+        setSelectedTemplate(template);
+        setFormData({});
     };
 
     return (
         <div className="learning-progress">
             <h2>Post a Learning Progress Update</h2>
 
-            <label>Choose a Template:</label>
+            <label htmlFor="template-select">Choose a Template:</label>
             <select
-                onChange={(e) => {
-                    const template = templates.find((t) => t.id === e.target.value);
-                    setSelectedTemplate(template);
-                    setFormData({});
-                }}
+                id="template-select"
                 value={selectedTemplate.id}
+                onChange={handleTemplateChange}
             >
                 {templates.map((template) => (
                     <option key={template.id} value={template.id}>
@@ -73,14 +130,55 @@ const LearningProgress = () => {
             <div className="input-group">
                 {selectedTemplate.placeholders.map((key) => (
                     <div key={key} className="form-field">
-                        <label>{key}</label>
+                        <label htmlFor={`placeholder-${key}`}>{key}</label>
                         <input
                             type="text"
+                            id={`placeholder-${key}`}
                             value={formData[key] || ""}
                             onChange={(e) => handleInputChange(key, e.target.value)}
                         />
                     </div>
                 ))}
+            </div>
+
+            <div className="media-urls">
+                <label>Media URLs:</label>
+                {mediaUrls.map((url, index) => (
+                    <div key={index} className="form-field-row">
+                        <input
+                            type="text"
+                            value={url}
+                            placeholder="Enter media URL"
+                            onChange={(e) => handleMediaUrlChange(index, e.target.value)}
+                        />
+                        <button type="button" onClick={() => removeMediaUrl(index)}>
+                            Remove
+                        </button>
+                    </div>
+                ))}
+                <button type="button" onClick={addMediaUrl}>
+                    Add Media URL
+                </button>
+            </div>
+
+            <div className="tags">
+                <label>Tags:</label>
+                {tags.map((tag, index) => (
+                    <div key={index} className="form-field-row">
+                        <input
+                            type="text"
+                            value={tag}
+                            placeholder="Enter tag"
+                            onChange={(e) => handleTagChange(index, e.target.value)}
+                        />
+                        <button type="button" onClick={() => removeTag(index)}>
+                            Remove
+                        </button>
+                    </div>
+                ))}
+                <button type="button" onClick={addTag}>
+                    Add Tag
+                </button>
             </div>
 
             <div className="generated-message">

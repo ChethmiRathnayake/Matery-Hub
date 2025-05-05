@@ -17,5 +17,4 @@ public class LearningProgressUpdateResponse {
     private List<String> tags;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
 }

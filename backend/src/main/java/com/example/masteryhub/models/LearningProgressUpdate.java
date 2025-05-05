@@ -13,29 +13,36 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "learning_progress_updates")
 public class LearningProgressUpdate {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long progressId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     private String templateId;
+
     @Column(columnDefinition = "TEXT")
-    private String generatedText;
+    private String generatedText; // Optional: store the final generated message
 
     @ElementCollection
     @CollectionTable(name = "update_placeholders", joinColumns = @JoinColumn(name = "update_id"))
     @MapKeyColumn(name = "placeholder_key")
-    @Column(name = "placeholder_value")
+    @Column(name = "placeholder_value", columnDefinition = "TEXT")
     private Map<String, String> placeholders;
 
     @ElementCollection
+    @CollectionTable(name = "update_media_urls", joinColumns = @JoinColumn(name = "update_id"))
+    @Column(name = "media_url")
     private List<String> mediaUrls;
 
     @ElementCollection
+    @CollectionTable(name = "update_tags", joinColumns = @JoinColumn(name = "update_id"))
+    @Column(name = "tag")
     private List<String> tags;
 
     private LocalDateTime createdAt;
@@ -51,6 +58,4 @@ public class LearningProgressUpdate {
     public void preUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
-
 }
