@@ -2,9 +2,11 @@ package com.example.masteryhub.controller;
 
 
 import com.example.masteryhub.DTO.request.UserProfileRequest;
+import com.example.masteryhub.hateoas.UserProfileHateoasHelper;
 import com.example.masteryhub.models.User;
 import com.example.masteryhub.service.UserProfileService;
 import jakarta.validation.Valid;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,10 +32,13 @@ public class UserProfileController {
 
 
     @GetMapping("/me")
-    public UserProfileRequest getMyProfile(Authentication authentication) {
+    public EntityModel<UserProfileRequest> getMyProfile(Authentication authentication) {
         User userDetails = (User) authentication.getPrincipal();
         Long userId = userDetails.getId();
-        return service.getProfileByUserId(userId);
+        UserProfileRequest profile = service.getProfileByUserId(userId);
+
+        // Add HATEOAS links using the helper method
+        return UserProfileHateoasHelper.addLinksToMyProfile(profile);
     }
 
     @GetMapping("/{id}")
@@ -44,8 +49,10 @@ public class UserProfileController {
     }
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserProfileRequest> update(@PathVariable Long id, @Valid @RequestBody UserProfileRequest dto) {
+    @PutMapping("/me")
+    public ResponseEntity<UserProfileRequest> update( @Valid @RequestBody UserProfileRequest dto,Authentication authentication) {
+        User userDetails = (User) authentication.getPrincipal();
+        Long id = userDetails.getId();
         try {
             return ResponseEntity.ok(service.updateProfile(id, dto));
         } catch (RuntimeException e) {
@@ -53,8 +60,10 @@ public class UserProfileController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> delete(Authentication authentication) {
+        User userDetails = (User) authentication.getPrincipal();
+        Long id = userDetails.getId();
         service.deleteProfile(id);
         return ResponseEntity.noContent().build();
     }

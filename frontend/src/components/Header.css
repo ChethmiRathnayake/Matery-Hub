@@ -1,0 +1,107 @@
+/* App Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-link {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeInBounce 0.8s ease-out forwards;
+    animation-delay: 0.2s;
+    color: #4f46e5;
+}
+
+/* Animation for Logo */
+@keyframes fadeInBounce {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Search Bar */
+.search-bar {
+    flex: 1;
+    display: flex;
+    margin: 0 2rem;
+    max-width: 500px;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+}
+
+.search-button {
+    padding: 0.5rem 1rem;
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Main Navigation */
+.main-nav {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #4b5563;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #4f46e5;
+    background-color: #f3f4f6;
+}
+
+.nav-icon {
+    font-size: 1.2rem;
+}
