@@ -1,13 +1,16 @@
 package com.example.masteryhub.controller;
 
 import com.example.masteryhub.DTO.request.ChangePasswordRequest;
+import com.example.masteryhub.hateoas.UserHateoasHelper;
 import com.example.masteryhub.models.User;
 import com.example.masteryhub.repository.UserRepository;
 import com.example.masteryhub.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,48 +30,50 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // CREATE
-//    @PostMapping
-//    public User createUser(@RequestBody User user) {
-//        return userRepo.save(user);
-//    }
 
-    // READ ALL
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
-    }
+
+
 
     // READ ONE
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+//    @GetMapping("/{id}")
+//    public ResponseEntity<User> getUser(@PathVariable Long id) {
+//        return userRepo.findById(id)
+//                .map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.notFound().build());
+//    }
+
+
+    @GetMapping("/me")
+    public ResponseEntity<EntityModel<User>> getUser(Authentication authentication) {
+        User authenticatedUser = (User) authentication.getPrincipal();
+        Long id = authenticatedUser.getId();
         return userRepo.findById(id)
-                .map(ResponseEntity::ok)
+                .map(user -> ResponseEntity.ok(UserHateoasHelper.addLinksToMyUser(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // UPDATE
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        return userRepo.findById(id)
-                .map(existingUser -> {
-                    existingUser.setUsername(user.getUsername());
-                    existingUser.setEmail(user.getEmail());
-                    // any other fields to update
-                    return ResponseEntity.ok(userRepo.save(existingUser));
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+//        return userRepo.findById(id)
+//                .map(existingUser -> {
+//                    existingUser.setUsername(user.getUsername());
+//                    existingUser.setEmail(user.getEmail());
+//                    // any other fields to update
+//                    return ResponseEntity.ok(userRepo.save(existingUser));
+//                })
+//                .orElse(ResponseEntity.notFound().build());
+//    }
 
     @PutMapping("/me")
     public ResponseEntity<?> updateUser(@RequestBody @Valid User updatedUser, Authentication authentication) {
+        System.out.println("Came here in /me");
+        System.out.println(updatedUser.getUsername());
+        System.out.println(updatedUser.getId());
         User authenticatedUser = (User) authentication.getPrincipal();
         Long userId = authenticatedUser.getId(); // Get the authenticated user's ID
 
-        // Ensure the user ID from the request matches the authenticated user's ID
-        if (!userId.equals(updatedUser.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only update your own account.");
-        }
+
 
         // Perform the update in the service layer
         try {

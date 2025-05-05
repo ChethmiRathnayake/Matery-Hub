@@ -37,7 +37,7 @@ const handleLogin = async (e) => {
             if (roles.includes('ROLE_ADMIN')) {
                 navigate('/admin');
             } else if (roles.includes('ROLE_USER')) {
-                navigate('/home');
+                navigate('/user');
             } else {
                 navigate('/'); // fallback
             }

@@ -9,8 +9,10 @@ const UserPage = () => {
         <div>
             {/* Common navbar */}
             <div className="user-dashboard">
+
                 <h1>Welcome to your Dashboard, {user.username}!</h1>
                 <p>Your roles: {user.roles.join(", ")}</p>
+                <p> you email: {user.email}</p>
                 {/* More content here */}
             </div>
         </div>
