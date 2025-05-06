@@ -12,6 +12,8 @@ import LearningProgress from "./pages/LearningProgress"; // relative path from p
 import Layout from "./components/Layout"; //
 import Unauthorized from "./pages/Unauthorized"
 import Profile from "./pages/Profile";
+import MyLearningProgress from "./pages/MyLearningProgress";
+import EditLearningProgress from "./pages/EditLearningProgress";
 function App() {
     return (
 
@@ -41,15 +43,17 @@ function App() {
                 <Route
                     path="/progress/new"
                     element={
-                        <ProtectedRoute
-                            element={
-                                <Layout>
-                                    <LearningProgress />
-                                </Layout>
-                            }
-                            roles={['ROLE_USER']}
-                        />
-                    }
+                        <ProtectedRoute element={<Layout><LearningProgress /></Layout>} roles={['ROLE_USER']}/>}
+                />
+                <Route
+                    path="/progress"
+                    element={
+                        <ProtectedRoute element={<Layout><MyLearningProgress /></Layout>} roles={['ROLE_USER']}/>}
+                />
+                <Route
+                    path="/edit-progress/:id"
+                    element={
+                        <ProtectedRoute element={<Layout><EditLearningProgress /></Layout>} roles={['ROLE_USER']}/>}
                 />
 
                 {/* Optionally add more protected routes for other roles (e.g., admin) */}
