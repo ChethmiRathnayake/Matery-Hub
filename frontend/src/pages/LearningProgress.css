@@ -60,3 +60,23 @@
 .learning-progress button:hover {
     background-color: #4338ca;
 }
+
+textarea.editable-preview {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    min-height: 120px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+}
+
+textarea.editable-preview:focus {
+    border-color: #007bff;
+    background-color: #fff;
+    outline: none;
+}
+
