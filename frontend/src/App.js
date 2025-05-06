@@ -10,11 +10,13 @@ import LearningProgress from "./pages/LearningProgress"; // relative path from p
 import Layout from "./components/Layout"; //
 import Unauthorized from "./pages/Unauthorized"
 
+
 function App() {
     return (
 
             <Routes>
                 {/* Public Route: Default home page */}
+
                 <Route
                     path="/"
                     element={<Layout><Home /></Layout>} />
