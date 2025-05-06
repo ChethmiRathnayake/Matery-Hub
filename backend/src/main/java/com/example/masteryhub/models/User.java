@@ -51,11 +51,11 @@ public class User implements UserDetails {
 
 
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonManagedReference("following-ref")
     private Set<Follow> following = new HashSet<>();  // Users that the current user follows
 
     @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonManagedReference("followers-ref")
     private Set<Follow> followers = new HashSet<>();  // Users who follow the current user
 
 

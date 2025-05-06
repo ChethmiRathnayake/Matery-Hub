@@ -38,6 +38,7 @@ public class UserService {
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
     public String registerUser(RegisterRequest request) {
+        System.out.println(request);
         System.out.println("User received: " + request.getUsername() + " " +request.getEmail() + " "+ request.getPassword() + " " +request.getRole());
         if (userRepository.existsByEmail(request.getEmail())) {
             return "Email is already in use!";
@@ -95,9 +96,9 @@ public class UserService {
         userProfile.setLastName(request.getLastName());
         userProfile.setBio(request.getBio());
         userProfile.setProfilePictureUrl(request.getProfilePictureUrl());
-
-        user.setUserProfile(userProfile); // 🟢 Link back
-
+        System.out.println(userProfile.getBio());
+        user.setUserProfile(userProfile);
+        System.out.println(userProfile);
         userRepository.save(user);
         return "User registered successfully";
     }
@@ -148,21 +149,34 @@ public class UserService {
     }
 
     public User updateUser(Long userId, User updatedUser) {
-        User user = userRepository.findById(userId)
+        User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Update user fields with the provided information
-        if (updatedUser.getUsername() != null) {
-            user.setUsername(updatedUser.getUsername());
-        }
-        if (updatedUser.getEmail() != null) {
-            user.setEmail(updatedUser.getEmail());
+        // Check if new username is taken by someone else
+        if (!existingUser.getUsername().equals(updatedUser.getUsername()) &&
+                userRepository.existsByUsername(updatedUser.getUsername())) {
+            throw new RuntimeException("Username is already taken");
         }
 
-        // You can add more fields based on what needs to be updated
+        // Check if new email is taken by someone else
+        if (!existingUser.getEmail().equals(updatedUser.getEmail()) &&
+                userRepository.existsByEmail(updatedUser.getEmail())) {
+            throw new RuntimeException("Email is already in use");
+        }
 
-        // Save the updated user back to the repository
-        return userRepository.save(user);
+        String newUsername=updatedUser.getUsername();
+        String newEmail=updatedUser.getEmail();
+
+        if(newUsername != null){
+            existingUser.setUsername(updatedUser.getUsername());
+        }
+
+        if (newEmail != null){
+            existingUser.setEmail(updatedUser.getEmail());
+        }
+
+
+        return userRepository.save(existingUser);
     }
 
 
