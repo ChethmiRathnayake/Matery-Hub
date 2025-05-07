@@ -14,6 +14,7 @@ import Unauthorized from "./pages/Unauthorized"
 import Profile from "./pages/Profile";
 import MyLearningProgress from "./pages/MyLearningProgress";
 import EditLearningProgress from "./pages/EditLearningProgress";
+import LearningProgressFeed from "./pages/LearningProgressFeed";
 function App() {
     return (
 
@@ -54,6 +55,11 @@ function App() {
                     path="/edit-progress/:id"
                     element={
                         <ProtectedRoute element={<Layout><EditLearningProgress /></Layout>} roles={['ROLE_USER']}/>}
+                />
+                <Route
+                    path="/progress-feed"
+                    element={
+                        <ProtectedRoute element={<Layout><LearningProgressFeed /></Layout>} roles={['ROLE_USER']}/>}
                 />
 
                 {/* Optionally add more protected routes for other roles (e.g., admin) */}

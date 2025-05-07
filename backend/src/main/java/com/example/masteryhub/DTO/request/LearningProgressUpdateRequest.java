@@ -6,9 +6,10 @@ import java.util.Map;
 
 @Data
 public class LearningProgressUpdateRequest {
-    private Long progressId; // ID of the update to modify
+    private Long userId;
+    private String templateId;
+    private String generatedText;
     private Map<String, String> placeholders;
     private List<String> mediaUrls;
     private List<String> tags;
-    private String generatedText; // Optionally allow updating generated text (if needed)
 }
