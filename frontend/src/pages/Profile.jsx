@@ -4,6 +4,8 @@ import ProfileHeader from "../components/profile/ProfileHeader";
 import { useAuthContext } from "../hooks/useAuthContext";
 import axios from "../api/axios";
 import useAxios from "../hooks/useAxios";
+import UserPosts from "./UserPosts";
+
 
 const ProfilePage = () => {
     const { user } = useAuthContext();
@@ -29,9 +31,12 @@ const ProfilePage = () => {
                 {loading && <p>Loading...</p>}
                 {error && <p className="text-red-500">{error}</p>}
                 {profile && <ProfileHeader user={profile} />}
+                <UserPosts/>
             </div>
         </div>
     );
 };
+
+
 
 export default ProfilePage;

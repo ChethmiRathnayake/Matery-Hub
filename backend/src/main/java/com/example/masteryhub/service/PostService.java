@@ -1,6 +1,6 @@
 package com.example.masteryhub.service;
 
-import com.example.masteryhub.DTO.PostResponse;
+import com.example.masteryhub.DTO.response.PostResponse;
 import com.example.masteryhub.models.Post;
 import com.example.masteryhub.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,4 +61,3 @@ public class PostService {
         return response;
     }
 }
-

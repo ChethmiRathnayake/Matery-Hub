@@ -1,8 +1,9 @@
-package com.example.masteryhub.DTO;
+package com.example.masteryhub.DTO.response;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
+
 
 @Data
 public class PostResponse {
