@@ -1,10 +1,12 @@
 package com.example.masteryhub.service;
 
+import com.example.masteryhub.DTO.request.LearningProgressUpdateRequest;
 import com.example.masteryhub.DTO.response.LearningProgressUpdateResponse;
 import com.example.masteryhub.models.LearningProgressUpdate;
 import com.example.masteryhub.models.User;
 import com.example.masteryhub.repository.LearningProgressUpdateRepo;
 import com.example.masteryhub.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,20 +39,27 @@ public class LearningProgressUpdateService {
                 .collect(Collectors.toList());
     }
 
-    public void addProgressUpdate(LearningProgressUpdate update) {
-        if (update.getUser() == null) {
-            System.out.println("User is null in the LearningProgressUpdate object.");
-            throw new IllegalArgumentException("User must not be null");
+
+    @Transactional
+    public void addProgressUpdate(LearningProgressUpdateRequest req) {
+        if (req.getUserId() == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
         }
 
-        Long userId = update.getUser().getId();
-        System.out.println("User ID: " + userId);
+        User user = userRepository.findById(req.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        LearningProgressUpdate update = new LearningProgressUpdate();
         update.setUser(user);
+        update.setTemplateId(req.getTemplateId());
+        update.setGeneratedText(req.getGeneratedText());
+        update.setPlaceholders(req.getPlaceholders());
+        update.setMediaUrls(req.getMediaUrls());
+        update.setTags(req.getTags());
 
         progUpdateRepo.save(update);
     }
+
 
 
     public void updateProgressUpdate(Long id, LearningProgressUpdate updated) {
@@ -78,6 +87,10 @@ public class LearningProgressUpdateService {
         dto.setCreatedAt(entity.getCreatedAt());
         dto.setUpdatedAt(entity.getUpdatedAt());
         dto.setUserId(entity.getUser().getId());
+
+        // Get username by fetching the User object using userId
+        dto.setUserId(entity.getUser().getId());
+        dto.setUsername(entity.getUser().getUsername());  // Fetch username here
         return dto;
     }
 }

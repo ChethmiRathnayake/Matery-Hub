@@ -1,5 +1,6 @@
 package com.example.masteryhub.controller;
 
+import com.example.masteryhub.DTO.request.LearningProgressUpdateRequest;
 import com.example.masteryhub.DTO.response.LearningProgressUpdateResponse;
 import com.example.masteryhub.models.LearningProgressUpdate;
 import com.example.masteryhub.models.User;
@@ -7,6 +8,8 @@ import com.example.masteryhub.service.LearningProgressUpdateService;
 import com.example.masteryhub.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -20,6 +23,7 @@ public class LearningProgressUpdateController {
     @Autowired
     private LearningProgressUpdateService progUpdateService;
     private UserService userService;
+    private LearningProgressUpdateRequest request;
 
     @GetMapping
     public List<LearningProgressUpdateResponse> getAllProgressUpdates() {
@@ -37,21 +41,19 @@ public class LearningProgressUpdateController {
     }
 
     @PostMapping
-    public void addProgressUpdate(@RequestBody LearningProgressUpdate progUpdate,
-                                  @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) {
-
-        // Log the Authorization token
-        if (authorizationHeader != null) {
-            System.out.println("Received Authorization Token: " + authorizationHeader);
-        } else {
-            System.out.println("No Authorization Token provided");
+    public ResponseEntity<?> addProgressUpdate(@RequestBody LearningProgressUpdateRequest request) {
+        try {
+            if (request == null || request.getUserId() == null) {
+                return ResponseEntity.badRequest().body("User ID is required");
+            }
+            progUpdateService.addProgressUpdate(request);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
-        // Call your service to add the progress update
-        progUpdateService.addProgressUpdate(progUpdate);
-        System.out.println("Progress update added successfully");
     }
-
 
     @PutMapping("/{id}")
     public void updateProgressUpdate(@PathVariable Long id, @RequestBody LearningProgressUpdate update) {
