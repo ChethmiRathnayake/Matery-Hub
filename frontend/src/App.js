@@ -12,6 +12,7 @@ import LearningProgress from "./pages/LearningProgress"; // relative path from p
 import Layout from "./components/Layout"; //
 import Unauthorized from "./pages/Unauthorized"
 import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
 function App() {
     return (
 
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/test" element={<Test />} />
                 {/* Public Route: Sign-Up page */}
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
 
                 <Route path="/unauthorized" element={<Unauthorized/>} />
                 {/* Protected Route: User Dashboard (only for logged-in users) */}
