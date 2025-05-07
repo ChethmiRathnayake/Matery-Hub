@@ -35,7 +35,7 @@ function App() {
                     element={<ProtectedRoute element={<Layout><UserPage /></Layout>} roles={['ROLE_USER']} />}
                 />
                 <Route
-                    path="/profile"
+                    path="/profile/me"
                     element={<ProtectedRoute element={<Layout><Profile /></Layout>} roles={['ROLE_USER']} />}
                 />
                 <Route
