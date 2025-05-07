@@ -58,6 +58,7 @@ public class UserProfileController {
 
     @PutMapping("/me")
     public ResponseEntity<UserProfileRequest> update( @Valid @RequestBody UserProfileRequest dto,Authentication authentication) {
+        System.out.println("inside update profile");
         User userDetails = (User) authentication.getPrincipal();
         Long id = userDetails.getId();
         try {
@@ -75,10 +76,15 @@ public class UserProfileController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{userId}/profile-picture")
-    public ResponseEntity<?> uploadProfilePicture(@PathVariable Long userId,
+    @PostMapping("/me/profile-picture")
+    public ResponseEntity<?> uploadProfilePicture(Authentication authentication,
                                                   @RequestParam("file") MultipartFile file) {
+        System.out.println("inside post");
+
         try {
+            System.out.println("inside post");
+            User userDetails = (User) authentication.getPrincipal();
+            Long userId = userDetails.getId();
             // Upload the profile picture and get the file name
             String fileName = fileUploadService.uploadFile(file);
 
@@ -91,10 +97,13 @@ public class UserProfileController {
         }
     }
 
-    @PostMapping("/{userId}/banner-image")
-    public ResponseEntity<?> uploadBannerImage(@PathVariable Long userId,
+    @PostMapping("/me/banner-image")
+    public ResponseEntity<?> uploadBannerImage(Authentication authentication,
                                                @RequestParam("file") MultipartFile file) {
+        System.out.println("inside post");
         try {
+            User userDetails = (User) authentication.getPrincipal();
+            Long userId = userDetails.getId();
             // Upload the banner image and get the file name
             String fileName = fileUploadService.uploadFile(file);
 
@@ -106,4 +115,35 @@ public class UserProfileController {
             return ResponseEntity.status(500).body("Error uploading file");
         }
     }
+
+    @DeleteMapping("/banner-image/me")
+    public ResponseEntity<?> deleteBannerImage(Authentication authentication) {
+        try {
+            User userDetails = (User) authentication.getPrincipal();
+            Long userId = userDetails.getId();
+            // Upload the banner image and get the file name
+
+
+            // Update the user's profile with the new banner image URL (relative path)
+            UserProfileRequest deletedProfile = service.deleteBannerImage(userId);
+
+            return ResponseEntity.ok(deletedProfile);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error deleting banner image ");
+        }
+    }
+
+
+    @DeleteMapping("/profile-picture/me")
+    public ResponseEntity<?> deleteProfilePicture(Authentication authentication) {
+
+        User userDetails = (User) authentication.getPrincipal();
+        Long userId = userDetails.getId();
+
+        service.deleteProfilePicture(userId);
+
+        return ResponseEntity.ok().body("Profile picture deleted successfully");
+    }
+
+
 }

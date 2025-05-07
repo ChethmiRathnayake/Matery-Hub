@@ -12,6 +12,11 @@ code {
     monospace;
 }
 
+.input {
+  @apply w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400;
+}
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

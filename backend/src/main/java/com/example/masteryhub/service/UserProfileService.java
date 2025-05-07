@@ -61,19 +61,49 @@ public class UserProfileService {
         UserProfile profile = profileRepo.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("UserProfile not found"));
 
-        profile.setFirstName(dto.getFirstName());
-        profile.setLastName(dto.getLastName());
-        profile.setBio(dto.getBio());
-        profile.setLocation(dto.getLocation());
-        profile.setProfilePictureUrl(dto.getProfilePictureUrl());
-        profile.setBannerImageUrl(dto.getBannerImageUrl());
-        profile.setInterests(dto.getInterests());
-        profile.setSkills(dto.getSkills());
-        profile.setLearningGoals(dto.getLearningGoals());
-        profile.setSocialLinks(dto.getSocialLinks());
+        if (dto.getFirstName() != null && !dto.getFirstName().equals(profile.getFirstName())) {
+            profile.setFirstName(dto.getFirstName());
+        }
+
+        if (dto.getLastName() != null && !dto.getLastName().equals(profile.getLastName())) {
+            profile.setLastName(dto.getLastName());
+        }
+
+        if (dto.getBio() != null && !dto.getBio().equals(profile.getBio())) {
+            profile.setBio(dto.getBio());
+        }
+
+        if (dto.getLocation() != null && !dto.getLocation().equals(profile.getLocation())) {
+            profile.setLocation(dto.getLocation());
+        }
+
+        if (dto.getProfilePictureUrl() != null && !dto.getProfilePictureUrl().equals(profile.getProfilePictureUrl())) {
+            profile.setProfilePictureUrl(dto.getProfilePictureUrl());
+        }
+
+        if (dto.getBannerImageUrl() != null && !dto.getBannerImageUrl().equals(profile.getBannerImageUrl())) {
+            profile.setBannerImageUrl(dto.getBannerImageUrl());
+        }
+
+        if (dto.getInterests() != null && !dto.getInterests().equals(profile.getInterests())) {
+            profile.setInterests(dto.getInterests());
+        }
+
+        if (dto.getSkills() != null && !dto.getSkills().equals(profile.getSkills())) {
+            profile.setSkills(dto.getSkills());
+        }
+
+        if (dto.getLearningGoals() != null && !dto.getLearningGoals().equals(profile.getLearningGoals())) {
+            profile.setLearningGoals(dto.getLearningGoals());
+        }
+
+        if (dto.getSocialLinks() != null && !dto.getSocialLinks().equals(profile.getSocialLinks())) {
+            profile.setSocialLinks(dto.getSocialLinks());
+        }
 
         return convertToDTO(profileRepo.save(profile));
     }
+
 
 
     // Delete profile
@@ -124,6 +154,17 @@ public class UserProfileService {
         UserProfile profile = profileRepo.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
 
+        String prof = profile.getProfilePictureUrl();
+        System.out.println(prof);
+        System.out.println("Insideprofileservice");
+
+        if(prof != null) {
+            String filePath = profile.getProfilePictureUrl().replace("/uploads/", "");
+            File file = new File("uploads/images/" + filePath);
+            if (file.exists()) {
+                file.delete();  // Delete the file
+            }
+        }
         // Store the relative path for the image (e.g., "uploads/images/UUID-profile.jpg")
         profile.setProfilePictureUrl("/uploads/" + fileName);
 
@@ -139,6 +180,18 @@ public class UserProfileService {
         UserProfile profile = profileRepo.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
 
+        String prof = profile.getBannerImageUrl();
+       System.out.println(prof);
+        if(prof != null) {
+
+            String filePath = profile.getBannerImageUrl().replace("/uploads/", "");
+            System.out.println(filePath);
+            File file = new File("uploads/images/" + filePath);
+            if (file.exists()) {
+                System.out.println("in");
+                file.delete();  // Delete the file
+            }
+        }
         // Store the relative path for the image (e.g., "uploads/images/UUID-banner.jpg")
         profile.setBannerImageUrl("/uploads/" + fileName);
 
@@ -155,14 +208,19 @@ public class UserProfileService {
         UserProfile profile = profileRepo.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
 
-        String filePath = profile.getProfilePictureUrl().replace("/uploads/", "");
-        File file = new File("uploads/images/" + filePath);
-        if (file.exists()) {
-            file.delete();  // Delete the file
+        String prof = profile.getProfilePictureUrl();
+
+        if(prof != null) {
+            String filePath = profile.getProfilePictureUrl().replace("/uploads/", "");
+            File file = new File("uploads/images/" + filePath);
+            if (file.exists()) {
+                file.delete();  // Delete the file
+            }
         }
 
         profile.setProfilePictureUrl(null);  // Update the database to remove the image reference
         profileRepo.save(profile);
+
     }
     public UserProfileRequest deleteBannerImage(Long userId) {
         User user = userRepo.findById(userId)
@@ -170,6 +228,12 @@ public class UserProfileService {
 
         UserProfile profile = profileRepo.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        String filePath = profile.getBannerImageUrl().replace("/uploads/", "");
+        File file = new File("uploads/images/" + filePath);
+        if (file.exists()) {
+            file.delete();  // Delete the file
+        }
 
         profile.setBannerImageUrl(null); // Set the banner image to null (remove)
 
