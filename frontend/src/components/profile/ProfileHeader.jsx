@@ -36,7 +36,7 @@ const ProfileHeader = ({ user, isOwnProfile, onProfileUpdate }) => {
     };
 
     return (
-        <div className="relative w-full rounded-2xl overflow-hidden shadow-lg bg-neutral-200">
+        <div className="relative w-full rounded-2xl overflow-hidden shadow-lg bg-neutral-100">
             {/* Banner */}
             <div
                 className="h-64 bg-cover bg-center relative"

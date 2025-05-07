@@ -13,6 +13,10 @@ import Layout from "./components/Layout"; //
 import Unauthorized from "./pages/Unauthorized"
 import Profile from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
+
+import MyLearningProgress from "./pages/MyLearningProgress";
+import EditLearningProgress from "./pages/EditLearningProgress";
+import LearningProgressFeed from "./pages/LearningProgressFeed";
 function App() {
     return (
 
