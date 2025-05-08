@@ -1,38 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
-import useAxios from "../hooks/useAxios";
 import axios from "../api/axios";
+import { format } from 'date-fns';
 import "./LearningPlanList.css";
 
 const LearningPlanList = () => {
     const { user } = useAuthContext();
     const navigate = useNavigate();
-    const { axiosFetch, error: apiError, loading } = useAxios();
     const [plans, setPlans] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [planToDelete, setPlanToDelete] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        if (!user?.id) return;
+        if (!user?.accessToken) {
+            navigate("/login");
+            return;
+        }
 
         const fetchPlans = async () => {
             try {
-                const response = await axiosFetch({
-                    axiosInstance: axios,
-                    method: "GET",
-                    url: `/api/plans/user/${user.id}`,
-                    headers: {
-                        Authorization: `${user.tokenType} ${user.accessToken}`,
-                    },
+                const token = `${user.tokenType} ${user.accessToken}`;
+                const response = await axios.get(`/plans/user/${user.id}`, {
+                    headers: { Authorization: token }
                 });
                 setPlans(response.data);
-            } catch (error) {
-                console.error("Failed to fetch plans:", error);
+            } catch (err) {
+                console.error("Failed to fetch plans:", err);
+                setError("Could not fetch your learning plans. Please try again later.");
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchPlans();
-    }, [user, axiosFetch]);
+    }, [user, navigate]);
 
     useEffect(() => {
         if (successMessage) {
@@ -43,23 +49,27 @@ const LearningPlanList = () => {
         }
     }, [successMessage]);
 
-    const handleDelete = async (planId) => {
-        if (window.confirm("Are you sure you want to delete this plan?")) {
-            try {
-                await axiosFetch({
-                    axiosInstance: axios,
-                    method: "DELETE",
-                    url: `/api/plans/${planId}`,
-                    headers: {
-                        Authorization: `${user.tokenType} ${user.accessToken}`,
-                    },
-                });
-                setPlans(plans.filter(plan => plan.planId !== planId));
-                setSuccessMessage("Plan deleted successfully");
-            } catch (error) {
-                console.error("Failed to delete plan:", error);
-            }
+    const handleDelete = async () => {
+        if (!planToDelete) return;
+        try {
+            const token = `${user.tokenType} ${user.accessToken}`;
+            await axios.delete(`/api/plans/${planToDelete}`, {
+                headers: { Authorization: token }
+            });
+            setPlans(prev => prev.filter(p => p.planId !== planToDelete));
+            setSuccessMessage("Plan deleted successfully!");
+        } catch (err) {
+            console.error("Delete failed:", err);
+            setError("Failed to delete plan. Please try again.");
+        } finally {
+            setShowConfirm(false);
+            setPlanToDelete(null);
         }
+    };
+
+    const confirmDelete = (id) => {
+        setPlanToDelete(id);
+        setShowConfirm(true);
     };
 
     const calculateProgress = (items) => {
@@ -68,89 +78,105 @@ const LearningPlanList = () => {
         return Math.round((completed / items.length) * 100);
     };
 
-    const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString(undefined, options);
-    };
+    const filteredPlans = plans.filter(plan =>
+        plan.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (plan.description && plan.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <div className="spinner"></div>
+                <p>Loading your plans...</p>
+            </div>
+        );
+    }
+
+    if (error) return <p className="error-message">{error}</p>;
 
     return (
         <div className="learning-plan-list-container">
-            <header className="learning-plan-header">
-                <h2>Your Learning Plans</h2>
-                <p className="subtitle">Track and manage your learning journeys</p>
+            <header className="progress-header">
+                <div className="header-content">
+                    <h1>My Learning Plans</h1>
+                    <p className="subtitle">Organize and track your learning goals</p>
+                </div>
                 <button
+                    className="primary-button new-post-button"
                     onClick={() => navigate("/plans/new")}
-                    className="create-button"
                 >
-                    + Create New Plan
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    New Plan
                 </button>
             </header>
 
-            {successMessage && (
-                <div className="alert success">
-                    {successMessage}
+            <div className="controls-section">
+                <div className="search-container">
+                    <svg className="search-icon" width="12" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
+                    </svg>
+                    <input
+                        type="text"
+                        placeholder="Search plans..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="search-input"
+                    />
                 </div>
-            )}
+            </div>
 
-            {apiError && (
-                <div className="alert error">
-                    {apiError}
-                </div>
-            )}
-
-            {loading && plans.length === 0 ? (
-                <div className="loading-spinner">
-                    <span className="spinner"></span>
-                    Loading your plans...
-                </div>
-            ) : plans.length === 0 ? (
+            {filteredPlans.length === 0 ? (
                 <div className="empty-state">
-                    <svg viewBox="0 0 24 24" width="48" height="48">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
                     </svg>
-                    <h3>No Learning Plans Yet</h3>
-                    <p>Start by creating your first learning plan to organize your goals</p>
+                    <h3>No plans found</h3>
+                    <p>{searchTerm ? "Try adjusting your search" : "Start by creating your first learning plan"}</p>
                     <button
-                        onClick={() => navigate("/plans/new")}
                         className="primary-button"
+                        onClick={() => navigate("/plans/new")}
                     >
                         Create Your First Plan
                     </button>
                 </div>
             ) : (
                 <div className="plans-grid">
-                    {plans.map(plan => (
+                    {filteredPlans.map(plan => (
                         <div key={plan.planId} className="plan-card">
                             <div className="plan-header">
                                 <h3>{plan.title}</h3>
                                 <div className="plan-actions">
                                     <button
                                         onClick={() => navigate(`/plans/${plan.planId}/edit`)}
-                                        className="icon-button"
-                                        title="Edit"
+                                        className="action-button edit-button"
                                     >
-                                        <svg viewBox="0 0 24 24" width="16" height="16">
-                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
                                         </svg>
+                                        Edit
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(plan.planId)}
-                                        className="icon-button"
-                                        title="Delete"
+                                        onClick={() => confirmDelete(plan.planId)}
+                                        className="action-button delete-button"
                                     >
-                                        <svg viewBox="0 0 24 24" width="16" height="16">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                                         </svg>
+                                        Delete
                                     </button>
                                 </div>
                             </div>
-                            <p className="plan-description">{plan.description || "No description"}</p>
+                            <p className="plan-description">{plan.description || "No description provided"}</p>
+
                             <div className="plan-dates">
-                                <span>{formatDate(plan.startDate)}</span>
+                                <span>{format(new Date(plan.startDate), 'MMM d, yyyy')}</span>
                                 <span>→</span>
-                                <span>{formatDate(plan.endDate)}</span>
+                                <span>{format(new Date(plan.endDate), 'MMM d, yyyy')}</span>
                             </div>
+
                             <div className="progress-container">
                                 <div className="progress-bar">
                                     <div
@@ -162,6 +188,7 @@ const LearningPlanList = () => {
                                     {calculateProgress(plan.items)}% Complete
                                 </span>
                             </div>
+
                             <div className="plan-footer">
                                 <span className="items-count">
                                     {plan.items?.length || 0} learning items
@@ -175,6 +202,36 @@ const LearningPlanList = () => {
                             </div>
                         </div>
                     ))}
+                </div>
+            )}
+
+            {showConfirm && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Confirm Deletion</h3>
+                        <p>Are you sure you want to delete this learning plan? This action cannot be undone.</p>
+
+                        <div className="modal-actions">
+                            <button
+                                onClick={() => setShowConfirm(false)}
+                                className="secondary-button"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="danger-button"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {successMessage && (
+                <div className="notification success">
+                    {successMessage}
                 </div>
             )}
         </div>
