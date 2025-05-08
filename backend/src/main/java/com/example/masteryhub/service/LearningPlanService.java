@@ -55,6 +55,31 @@ public class LearningPlanService {
                 .collect(Collectors.toList());
     }
 
+    public LearningPlanResponse getPlanById(Long planId) {
+        return learningPlanRepository.findById(planId)
+                .map(plan -> {
+                    List<PlanItemResponse> itemResponses = plan.getPlanItems().stream()
+                            .map(item -> new PlanItemResponse(
+                                    item.getItemId(),
+                                    item.getTopic(),
+                                    item.getResourceLink(),
+                                    item.isCompleted()
+                            ))
+                            .collect(Collectors.toList());
+
+                    return new LearningPlanResponse(
+                            plan.getPlanId(),
+                            plan.getTitle(),
+                            plan.getDescription(),
+                            plan.getStartDate(),
+                            plan.getEndDate(),
+                            plan.getUser().getId(),
+                            itemResponses
+                    );
+                })
+                .orElse(null);
+    }
+
     private LearningPlanResponse mapToResponseDTO(LearningPlan plan) {
         LearningPlanResponse response = new LearningPlanResponse();
         response.setPlanId(plan.getPlanId());

@@ -20,6 +20,7 @@ import EditLearningProgress from "./pages/EditLearningProgress";
 import LearningProgressFeed from "./pages/LearningProgressFeed";
 import LearningPlan from "./pages/LearningPlan";
 import LearningPlanList from "./pages/LearningPlanList";
+import LearningPlanEdit from "./pages/LearningPlanEdit";
 function App() {
     return (
 
@@ -72,6 +73,11 @@ function App() {
                     path="/plans"
                     element={
                         <ProtectedRoute element={<Layout><LearningPlanList /></Layout>} roles={['ROLE_USER']}/>}
+                />
+                <Route
+                    path="/plans/:id/edit"
+                    element={
+                        <ProtectedRoute element={<Layout><LearningPlanEdit /></Layout>} roles={['ROLE_USER']}/>}
                 />
 
                 {/* Optionally add more protected routes for other roles (e.g., admin) */}

@@ -1,16 +1,19 @@
 package com.example.masteryhub.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Getter
+@Setter
 @Table(name = "learning_plan")
 public class LearningPlan {
     @Id
@@ -28,4 +31,5 @@ public class LearningPlan {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
 }

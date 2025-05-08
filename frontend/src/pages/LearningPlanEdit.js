@@ -3,13 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
 import useAxios from "../hooks/useAxios";
 import axios from "../api/axios";
-import "./LearningPlanEdit.css";
+import "./LearningPlan.css";
 
 const LearningPlanEdit = () => {
     const { id } = useParams();
     const { user } = useAuthContext();
     const navigate = useNavigate();
-    const { axiosFetch, error: apiError, loading } = useAxios();
+    const { axiosFetch, loading } = useAxios();
+
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -21,41 +22,37 @@ const LearningPlanEdit = () => {
     ]);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
+    const [urlErrors, setUrlErrors] = useState({});
+    const [isLoadingData, setIsLoadingData] = useState(true);
 
     useEffect(() => {
-        if (!user?.accessToken || !id) return;
-
         const fetchPlan = async () => {
             try {
-                const response = await axiosFetch({
-                    axiosInstance: axios,
-                    method: "GET",
-                    url: `/plans/${plan.id}`,
-                    headers: {
-                        Authorization: `${user.tokenType} ${user.accessToken}`,
-                    },
+                const token = `${user.tokenType} ${user.accessToken}`;
+                const response = await axios.get(`/plans/${id}`, {
+                    headers: { Authorization: token },
                 });
 
-                const plan = response.data.find(p => p.planId === parseInt(id));
-                if (plan) {
-                    setFormData({
-                        title: plan.title,
-                        description: plan.description,
-                        startDate: plan.startDate,
-                        endDate: plan.endDate
-                    });
-                    setPlanItems(plan.items || []);
-                } else {
-                    navigate("/plans", { replace: true });
-                }
-            } catch (error) {
-                console.error("Failed to fetch plan:", error);
-                navigate("/plans", { replace: true });
+                const data = response.data;
+                setFormData({
+                    title: data.title,
+                    description: data.description,
+                    startDate: data.startDate,
+                    endDate: data.endDate
+                });
+                setPlanItems(data.items?.length ? data.items : [{ topic: "", resourceLink: "", completed: false }]);
+            } catch (err) {
+                setError("Failed to fetch plan for editing.");
+                console.error(err);
+            } finally {
+                setIsLoadingData(false);
             }
         };
 
-        fetchPlan();
-    }, [id, user, axiosFetch, navigate]);
+        if (user?.accessToken) {
+            fetchPlan();
+        }
+    }, [id, user]);
 
     useEffect(() => {
         if (successMessage) {
@@ -75,6 +72,16 @@ const LearningPlanEdit = () => {
     const handleItemChange = (index, field, value) => {
         const newItems = [...planItems];
         newItems[index][field] = field === "completed" ? value === "true" : value;
+
+        // Validate URL when resourceLink changes
+        if (field === "resourceLink") {
+            const isValid = /^https?:\/\/.+/.test(value.trim());
+            setUrlErrors(prev => ({
+                ...prev,
+                [index]: value.trim() && !isValid ? "Invalid URL format" : null,
+            }));
+        }
+
         setPlanItems(newItems);
     };
 
@@ -86,6 +93,11 @@ const LearningPlanEdit = () => {
         if (planItems.length > 1) {
             const newItems = planItems.filter((_, i) => i !== index);
             setPlanItems(newItems);
+            setUrlErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[index];
+                return newErrors;
+            });
         }
     };
 
@@ -111,6 +123,12 @@ const LearningPlanEdit = () => {
             return false;
         }
 
+        const invalidUrls = Object.entries(urlErrors).filter(([_, error]) => error);
+        if (invalidUrls.length > 0) {
+            setError("Please correct the highlighted URL fields");
+            return false;
+        }
+
         setError(null);
         return true;
     };
@@ -125,6 +143,7 @@ const LearningPlanEdit = () => {
 
         if (!validateForm()) return;
 
+        const token = `${user.tokenType} ${user.accessToken}`;
         const payload = {
             title: formData.title,
             description: formData.description,
@@ -139,25 +158,30 @@ const LearningPlanEdit = () => {
         };
 
         try {
-            await axiosFetch({
+            const response = await axiosFetch({
                 axiosInstance: axios,
                 method: "PUT",
-                url: `/api/plans/${id}`,
+                url: `/plans/${id}`,
                 data: payload,
-                headers: {
-                    Authorization: `${user.tokenType} ${user.accessToken}`,
-                },
+                headers: { Authorization: token },
             });
 
-            setSuccessMessage("Learning plan updated successfully!");
-        } catch (error) {
-            const errMsg =
-                error?.response?.data?.message ||
-                error?.response?.statusText ||
-                "An error occurred while updating the plan.";
-            setError(errMsg);
+            console.log("✅ Update successful:", response?.data);
+            setSuccessMessage("Plan updated successfully!");
+            navigate("/plans");
+        } catch (err) {
+            console.error("❌ Update failed:", err);
+            setError(err.response?.data?.message || "Failed to update the plan.");
         }
     };
+
+    if (isLoadingData) {
+        return (
+            <div className="learning-plan-container">
+                <div className="loading-spinner">Loading plan data...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="learning-plan-container">
@@ -167,10 +191,10 @@ const LearningPlanEdit = () => {
             </header>
 
             <form onSubmit={handleSubmit} className="learning-plan-form">
-                {(error || apiError) && (
+                {error && (
                     <div className="alert error">
-                        {error || apiError}
-                        {(error?.includes("Session expired") || apiError?.includes("Session expired")) && (
+                        {error}
+                        {error?.includes("Session expired") && (
                             <button onClick={() => navigate("/login")} className="text-button">
                                 Go to Login
                             </button>
@@ -277,9 +301,12 @@ const LearningPlanEdit = () => {
                                                 value={item.resourceLink}
                                                 onChange={(e) => handleItemChange(index, "resourceLink", e.target.value)}
                                                 placeholder="https://example.com/resource"
-                                                className="form-input"
+                                                className={`form-input ${urlErrors[index] ? 'error' : ''}`}
                                             />
                                         </div>
+                                        {urlErrors[index] && (
+                                            <span className="error-message">{urlErrors[index]}</span>
+                                        )}
                                     </div>
                                     <div className="form-field">
                                         <label className="input-label">Status</label>

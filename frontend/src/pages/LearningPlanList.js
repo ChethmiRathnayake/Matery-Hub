@@ -15,52 +15,60 @@ const LearningPlanList = () => {
     const [planToDelete, setPlanToDelete] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [filterTag, setFilterTag] = useState("");
 
-    useEffect(() => {
-        if (!user?.accessToken) {
+    const fetchPlans = async () => {
+        if (!user) {
             navigate("/login");
             return;
         }
 
-        const fetchPlans = async () => {
-            try {
-                const token = `${user.tokenType} ${user.accessToken}`;
-                const response = await axios.get(`/plans/user/${user.id}`, {
-                    headers: { Authorization: token }
-                });
-                setPlans(response.data);
-            } catch (err) {
-                console.error("Failed to fetch plans:", err);
+        try {
+            const response = await axios.get(`/plans/user/${user.id}`, {
+                headers: {
+                    'Authorization': `${user.tokenType} ${user.accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            setPlans(response.data);
+        } catch (err) {
+            console.error("Failed to fetch plans:", err);
+            if (err.response?.status === 403) {
+                setError("You don't have permission to view these plans. Please log in again.");
+                // Optionally clear user data and redirect to login
+                // localStorage.removeItem('user');
+                // navigate('/login');
+            } else {
                 setError("Could not fetch your learning plans. Please try again later.");
-            } finally {
-                setLoading(false);
             }
-        };
-
-        fetchPlans();
-    }, [user, navigate]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        if (successMessage) {
-            const timer = setTimeout(() => {
-                setSuccessMessage(null);
-            }, 3000);
-            return () => clearTimeout(timer);
-        }
-    }, [successMessage]);
+        fetchPlans();
+    }, [user]); // Added user to dependency array
 
     const handleDelete = async () => {
-        if (!planToDelete) return;
+        if (!planToDelete || !user) return;
         try {
-            const token = `${user.tokenType} ${user.accessToken}`;
-            await axios.delete(`/api/plans/${planToDelete}`, {
-                headers: { Authorization: token }
+            await axios.delete(`/plans/${planToDelete}`, {
+                headers: {
+                    'Authorization': `${user.tokenType} ${user.accessToken}`,
+                    'Content-Type': 'application/json'
+                }
             });
             setPlans(prev => prev.filter(p => p.planId !== planToDelete));
             setSuccessMessage("Plan deleted successfully!");
+            setTimeout(() => setSuccessMessage(null), 3000);
         } catch (err) {
             console.error("Delete failed:", err);
-            setError("Failed to delete plan. Please try again.");
+            if (err.response?.status === 403) {
+                setError("You don't have permission to delete this plan.");
+            } else {
+                setError("Failed to delete plan. Please try again.");
+            }
         } finally {
             setShowConfirm(false);
             setPlanToDelete(null);
@@ -78,10 +86,19 @@ const LearningPlanList = () => {
         return Math.round((completed / items.length) * 100);
     };
 
-    const filteredPlans = plans.filter(plan =>
-        plan.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (plan.description && plan.description.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    // Get all unique tags for filtering
+    const allTags = [...new Set(plans.flatMap(plan => plan.tags || []))];
+
+    // Filter plans based on search term and selected tag
+    const filteredPlans = plans.filter(plan => {
+        const matchesSearch = plan.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (plan.description && plan.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (plan.tags && plan.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
+
+        const matchesTag = !filterTag || (plan.tags && plan.tags.includes(filterTag));
+
+        return matchesSearch && matchesTag;
+    });
 
     if (loading) {
         return (
@@ -118,13 +135,19 @@ const LearningPlanList = () => {
                         <circle cx="11" cy="11" r="8" />
                         <path d="M21 21l-4.35-4.35" />
                     </svg>
-                    <input
-                        type="text"
-                        placeholder="Search plans..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
-                    />
+                </div>
+
+                <div className="filter-container">
+                    <select
+                        value={filterTag}
+                        onChange={(e) => setFilterTag(e.target.value)}
+                        className="filter-select"
+                    >
+                        <option value="">All Tags</option>
+                        {allTags.map(tag => (
+                            <option key={tag} value={tag}>{tag}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
@@ -134,7 +157,7 @@ const LearningPlanList = () => {
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
                     </svg>
                     <h3>No plans found</h3>
-                    <p>{searchTerm ? "Try adjusting your search" : "Start by creating your first learning plan"}</p>
+                    <p>{searchTerm || filterTag ? "Try adjusting your search filters" : "Start by creating your first learning plan"}</p>
                     <button
                         className="primary-button"
                         onClick={() => navigate("/plans/new")}
@@ -148,27 +171,21 @@ const LearningPlanList = () => {
                         <div key={plan.planId} className="plan-card">
                             <div className="plan-header">
                                 <h3>{plan.title}</h3>
-                                <div className="plan-actions">
-                                    <button
-                                        onClick={() => navigate(`/plans/${plan.planId}/edit`)}
-                                        className="action-button edit-button"
-                                    >
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                                        </svg>
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => confirmDelete(plan.planId)}
-                                        className="action-button delete-button"
-                                    >
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                        </svg>
-                                        Delete
-                                    </button>
-                                </div>
+                                {plan.tags?.length > 0 && (
+                                    <div className="tags-container">
+                                        {plan.tags.map((tag, i) => (
+                                            <span
+                                                key={i}
+                                                className="tag"
+                                                onClick={() => setFilterTag(tag)}
+                                            >
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
+
                             <p className="plan-description">{plan.description || "No description provided"}</p>
 
                             <div className="plan-dates">
@@ -199,6 +216,27 @@ const LearningPlanList = () => {
                                 >
                                     View Details →
                                 </Link>
+                            </div>
+
+                            <div className="plan-actions">
+                                <button
+                                    onClick={() => navigate(`/plans/${plan.planId}/edit`)}
+                                    className="action-button edit-button"
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                                    </svg>
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={() => confirmDelete(plan.planId)}
+                                    className="action-button delete-button"
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                    </svg>
+                                    Delete
+                                </button>
                             </div>
                         </div>
                     ))}

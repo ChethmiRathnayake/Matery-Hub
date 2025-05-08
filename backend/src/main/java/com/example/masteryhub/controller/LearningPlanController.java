@@ -27,6 +27,15 @@ public class LearningPlanController {
         return ResponseEntity.ok(plans);
     }
 
+    @GetMapping("/{planId}")
+    public ResponseEntity<LearningPlanResponse> getPlanById(@PathVariable Long planId) {
+        LearningPlanResponse plan = learningPlanService.getPlanById(planId);
+        if (plan == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(plan);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<LearningPlanResponse> updatePlan(
             @PathVariable Long id,
