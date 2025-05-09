@@ -13,11 +13,17 @@ import Layout from "./components/Layout"; //
 import Unauthorized from "./pages/Unauthorized"
 import Profile from "./pages/Profile";
 
+import PostForm from "./pages/PostForm";
+import PostEdit from "./pages/PostEdit";
+import PostDetails from "./pages/PostDetails";
+
+
 import ForgotPassword from "./pages/ForgotPassword";
 import FollowPage from "./pages/FollowPage"
 import MyLearningProgress from "./pages/MyLearningProgress";
 import EditLearningProgress from "./pages/EditLearningProgress";
 import LearningProgressFeed from "./pages/LearningProgressFeed";
+
 
 function App() {
     return (
@@ -70,6 +76,13 @@ function App() {
                     element={
                         <ProtectedRoute element={<Layout><LearningProgressFeed /></Layout>} roles={['ROLE_USER']}/>}
                 />
+
+
+
+                      <Route path="/post/new" element={<PostForm />} />
+                      <Route path="/post/edit/:id" element={<PostEdit />} />
+                      <Route path="/post/:id" element={<PostDetails />} />
+
 
                 {/* Optionally add more protected routes for other roles (e.g., admin) */}
                 {/* <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} roles={['ROLE_ADMIN']} />} /> */}

@@ -8,7 +8,9 @@ const useAxios = () => {
     const [loading, setLoading] = useState(false);
     const [controller, setController] = useState(null);
 
+
     const axiosFetch = async ({ axiosInstance, method, url, data, config = {} }) => {
+
         setLoading(true);
         const abortCtrl = new AbortController();
         setController(abortCtrl);
@@ -17,6 +19,7 @@ const useAxios = () => {
             console.log(url)
 
             // Add token to headers if available
+            console.log(data)
             const tokenHeader = user?.accessToken
                 ? { Authorization: `${user.tokenType} ${user.accessToken}` }
                 : {};
@@ -31,9 +34,10 @@ const useAxios = () => {
             };
 
             let result;
+            console.log(url)
             switch (method.toLowerCase()) {
                 case "get":
-                    console.log(url)
+
                     result = await axiosInstance.get(url, finalConfig);
                     break;
                 case "post":

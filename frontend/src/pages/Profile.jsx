@@ -4,6 +4,8 @@ import ProfileHeader from "../components/profile/ProfileHeader";
 import { useAuthContext } from "../hooks/useAuthContext";
 import axios from "../api/axios";
 import useAxios from "../hooks/useAxios";
+import UserPosts from "./UserPosts";
+
 
 const ProfilePage = () => {
     const { user } = useAuthContext();
@@ -59,10 +61,16 @@ const ProfilePage = () => {
             <div className="w-3/4 ">
                 {loading && <p>Loading...</p>}
                 {error && <p className="text-red-500">{error}</p>}
+
                 {profile && <ProfileHeader key={profileVersion} id = {user.id} user={profile} follow={follow} isOwnProfile={true} onProfileUpdate={refetchProfile} />}
+                   <UserPosts/>
             </div>
         </div>
     );
+
+
 };
+
+
 
 export default ProfilePage;
