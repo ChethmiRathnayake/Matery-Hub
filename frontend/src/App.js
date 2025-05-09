@@ -24,6 +24,10 @@ import MyLearningProgress from "./pages/MyLearningProgress";
 import EditLearningProgress from "./pages/EditLearningProgress";
 import LearningProgressFeed from "./pages/LearningProgressFeed";
 
+import LearningPlan from "./pages/LearningPlan";
+import LearningPlanList from "./pages/LearningPlanList";
+import LearningPlanEdit from "./pages/LearningPlanEdit";
+import LearningPlanDetails from "./pages/LearningPlanDetails";
 
 function App() {
     return (
@@ -74,10 +78,26 @@ function App() {
                     element={
                         <ProtectedRoute element={<Layout><EditLearningProgress /></Layout>} roles={['ROLE_USER']}/>}
                 />
+
                 <Route
-                    path="/progress-feed"
+                    path="/plan"
                     element={
-                        <ProtectedRoute element={<Layout><LearningProgressFeed /></Layout>} roles={['ROLE_USER']}/>}
+                        <ProtectedRoute element={<Layout><LearningPlan /></Layout>} roles={['ROLE_USER']}/>}
+                />
+                <Route
+                    path="/plans"
+                    element={
+                        <ProtectedRoute element={<Layout><LearningPlanList /></Layout>} roles={['ROLE_USER']}/>}
+                />
+                <Route
+                    path="/plans/:id/edit"
+                    element={
+                        <ProtectedRoute element={<Layout><LearningPlanEdit /></Layout>} roles={['ROLE_USER']}/>}
+                />
+                <Route
+                    path="/plans/:id"
+                    element={
+                        <ProtectedRoute element={<Layout><LearningPlanDetails /></Layout>} roles={['ROLE_USER']}/>}
                 />
 
 

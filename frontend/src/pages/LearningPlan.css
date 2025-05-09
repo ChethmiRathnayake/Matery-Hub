@@ -1,0 +1,98 @@
+.container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+form {
+    margin-bottom: 2rem;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.item-inputs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.item-inputs input {
+    flex: 1;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.add-btn {
+    background-color: #4caf50;
+    color: white;
+}
+
+.submit-btn {
+    background-color: #2196f3;
+    color: white;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.plan {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.plan-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.progress {
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+.topic-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.topic-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+
