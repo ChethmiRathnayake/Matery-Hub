@@ -62,9 +62,14 @@ const ProfilePage = () => {
                 {loading && <p>Loading...</p>}
                 {error && <p className="text-red-500">{error}</p>}
 
-                {profile && <ProfileHeader key={profileVersion} id = {user.id} user={profile} follow={follow} isOwnProfile={true} onProfileUpdate={refetchProfile} />}
-                   <UserPosts/>
+                {profile &&
+                    <ProfileHeader key={profileVersion} id={user.id} user={profile} follow={follow} isOwnProfile={true}
+                                   onProfileUpdate={refetchProfile}/>}
+
+
+
             </div>
+
         </div>
     );
 

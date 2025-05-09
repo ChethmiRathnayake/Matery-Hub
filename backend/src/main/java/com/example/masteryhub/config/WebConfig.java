@@ -12,6 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // Map "/uploads/**" to the actual folder on the server
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/images/");  // "file:" tells Spring Boot to look in the local file system
+                .addResourceLocations("file:uploads/images/")// "file:" tells Spring Boot to look in the local file system
+        .addResourceLocations("file:uploads/posts/");
     }
 }

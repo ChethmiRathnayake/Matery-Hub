@@ -171,40 +171,41 @@ console.log(follow)
                     Contact Info
                 </Button>
 
-                {/* Follower/Following */}
-                <div
-                    onClick={() =>
-                        navigate("/follow", {
-                            state: {
-                                userId: id,
-                                initialTab: "followers"
-                            }
-                        })
-                    }
-                    className="cursor-pointer hover:underline"
-                >
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: "#3182CE" }}>
+                {/* Follower/Following - Side by Side */}
+                <div className="flex items-center gap-4 mt-2">
+                    <div
+                        onClick={() =>
+                            navigate("/follow", {
+                                state: {
+                                    userId: id,
+                                    initialTab: "following"
+                                }
+                            })
+                        }
+                        className="cursor-pointer hover:underline"
+                    >
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: "#3182CE" }}>
+                            {(follow?.followingCount ?? 0)} Following
+                        </Typography>
+                    </div>
 
-                        {follow.followersCount || 0} Followers
-
-                    </Typography>
+                    <div
+                        onClick={() =>
+                            navigate("/follow", {
+                                state: {
+                                    userId: id,
+                                    initialTab: "followers"
+                                }
+                            })
+                        }
+                        className="cursor-pointer hover:underline"
+                    >
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: "#3182CE" }}>
+                            {(follow?.followersCount ?? 0)} Followers
+                        </Typography>
+                    </div>
                 </div>
 
-                <div
-                    onClick={() =>
-                        navigate("/follow", {
-                            state: {
-                                userId: id,
-                                initialTab: "following"
-                            }
-                        })
-                    }
-                    className="cursor-pointer hover:underline"
-                >
-                    <Typography variant="body2" sx={{ fontWeight: 500, color: "#3182CE" }}>
-                        {follow.followingCount || 0} Following
-                    </Typography>
-                </div>
 
             </div>
 
