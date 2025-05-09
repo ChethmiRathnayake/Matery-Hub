@@ -1,62 +1,299 @@
-.learning-progress {
-    max-width: 700px;
-    margin: 2rem auto;
+/* Base Styles */
+.learning-container {
+    max-width: 800px;
+    margin: 0 auto;
     padding: 2rem;
-    background-color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-    border-radius: 12px;
-    font-family: Arial, sans-serif;
-}
-
-.learning-progress h2 {
-    font-size: 24px;
-    margin-bottom: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
 }
 
-.learning-progress label {
+.learning-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.learning-header h1 {
+    font-size: 2.5rem;
+    color: #4a6bff;
+    margin-bottom: 0.5rem;
+}
+
+.learning-header h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Form Styles */
+.progress-form {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-section {
+    margin-bottom: 1.8rem;
+}
+
+.form-label {
     display: block;
-    font-weight: bold;
-    margin-top: 1rem;
-    margin-bottom: 0.25rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
     color: #444;
 }
 
-.learning-progress select,
-.learning-progress input[type="text"] {
-    width: 100%;
-    padding: 0.5rem;
+/* Template Selector */
+.template-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
     margin-bottom: 1rem;
-    border: 1px solid #ccc;
+}
+
+.template-card {
+    background: white;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
-    font-size: 14px;
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
 }
 
-.input-group .form-field {
-    margin-bottom: 1rem;
+.template-card:hover {
+    border-color: #4a6bff;
+    transform: translateY(-2px);
 }
 
-.generated-message {
-    background-color: #f9f9f9;
-    padding: 1rem;
-    border-left: 4px solid #4f46e5;
-    border-radius: 6px;
-    font-size: 15px;
+.template-card.active {
+    border: 2px solid #4a6bff;
+    background-color: #f8f9ff;
+}
+
+.template-card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
     color: #333;
+}
+
+.template-preview {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Input Fields */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
     margin-bottom: 1.5rem;
 }
 
-.learning-progress button {
-    padding: 0.6rem 1.2rem;
-    font-size: 14px;
-    background-color: #4f46e5;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+.form-field {
+    margin-bottom: 0;
 }
 
-.learning-progress button:hover {
-    background-color: #4338ca;
+.input-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: border 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #4a6bff;
+    box-shadow: 0 0 0 2px rgba(74, 107, 255, 0.2);
+}
+
+.form-input.error {
+    border-color: #ff4a4a;
+}
+
+/* Media and Tags Containers */
+.media-container, .tags-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.link-icon, .tag-icon {
+    position: absolute;
+    left: 12px;
+    width: 18px;
+    height: 18px;
+    stroke: #999;
+}
+
+.input-with-icon input {
+    padding-left: 40px;
+}
+
+.remove-button {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
+}
+
+.remove-button:hover {
+    color: #ff4a4a;
+}
+
+.add-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: #4a6bff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    margin-top: 0.3rem;
+}
+
+.add-button svg {
+    stroke: #4a6bff;
+}
+
+.add-button:hover {
+    text-decoration: underline;
+}
+
+/* Message Preview */
+.message-preview {
+    position: relative;
+    width: 100%;
+}
+
+.message-textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.message-textarea:focus {
+    outline: none;
+    border-color: #4a6bff;
+    box-shadow: 0 0 0 2px rgba(74, 107, 255, 0.2);
+}
+
+.character-count {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 0.8rem;
+    color: #999;
+    background: white;
+    padding: 0 0.3rem;
+}
+
+/* Submit Button */
+.submit-button {
+    width: 100%;
+    padding: 1rem;
+    background-color: #4a6bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    transition: background 0.2s;
+}
+
+.submit-button:hover {
+    background-color: #3a5bef;
+}
+
+.submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.spinner {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 2px solid white;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Alerts */
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.alert.error {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border-left: 4px solid #d32f2f;
+}
+
+.alert.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-left: 4px solid #2e7d32;
+}
+
+.text-button {
+    background: none;
+    border: none;
+    color: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+.error-message {
+    font-size: 0.8rem;
+    color: #ff4a4a;
+    margin-top: 0.3rem;
 }

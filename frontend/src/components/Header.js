@@ -77,11 +77,11 @@ const Header = () => {
 
                             {showDropdown && (
                                 <div className="dropdown-box">
-                                    <Link to="/profile" className="dropdown-item">
+                                    <Link to="/profile/me" className="dropdown-item">
                                         <FaUser className="dropdown-icon" />
                                         View Profile
                                     </Link>
-                                    <Link to="/profile" className="dropdown-item">
+                                    <Link to="/settings" className="dropdown-item">
                                         <FaCog className="dropdown-icon" />
                                         Settings
                                     </Link>

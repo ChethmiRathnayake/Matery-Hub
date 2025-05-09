@@ -8,12 +8,16 @@ const useAxios = () => {
     const [loading, setLoading] = useState(false);
     const [controller, setController] = useState(null);
 
-    const axiosFetch = async ({ axiosInstance, method, url, data , config = {} }) => {
+
+    const axiosFetch = async ({ axiosInstance, method, url, data, config = {} }) => {
+
         setLoading(true);
         const abortCtrl = new AbortController();
         setController(abortCtrl);
 
         try {
+            console.log(url)
+
             // Add token to headers if available
             console.log(data)
             const tokenHeader = user?.accessToken
@@ -48,6 +52,7 @@ const useAxios = () => {
                 default:
                     throw new Error(`Unsupported HTTP method: ${method}`);
             }
+
 
             setResponse(result.data);
             setError(null);

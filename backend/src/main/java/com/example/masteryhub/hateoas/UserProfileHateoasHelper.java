@@ -37,6 +37,27 @@ public class UserProfileHateoasHelper {
         // Add delete link
         entityModel.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserProfileController.class).delete(null)).withRel("delete"));
 
+        // Upload profile picture (POST /me/profile-picture)
+        entityModel.add(WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(UserProfileController.class).uploadProfilePicture(null, null)
+        ).withRel("uploadProfilePicture"));
+
+        // Upload banner image (POST /me/banner-image)
+        entityModel.add(WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(UserProfileController.class).uploadBannerImage(null, null)
+        ).withRel("uploadBannerImage"));
+
+        // Delete profile picture (DELETE /profile-picture/me)
+        entityModel.add(WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(UserProfileController.class).deleteProfilePicture(null)
+        ).withRel("deleteProfilePicture"));
+
+        // Delete banner image (DELETE /banner-image/me)
+        entityModel.add(WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(UserProfileController.class).deleteBannerImage(null)
+        ).withRel("deleteBannerImage"));
+
+
         return entityModel;
     }
 }

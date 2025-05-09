@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import "./LearningProgress.css";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import { useAuthContext } from "../hooks/useAuthContext";
-import { useNavigate } from "react-router-dom";
 import useAxios from "../hooks/useAxios";
+import "./LearningProgress.css";
 
 const templates = [
     {
@@ -26,28 +26,60 @@ const templates = [
     }
 ];
 
-const LearningProgress = () => {
+const EditLearningProgress = () => {
+    const { id } = useParams();
     const { user } = useAuthContext();
     const navigate = useNavigate();
-    const { axiosFetch, error: apiError, loading } = useAxios();
-    const [selectedTemplate, setSelectedTemplate] = useState(templates[0]);
+    const { axiosFetch, loading } = useAxios();
+
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [formData, setFormData] = useState({});
     const [mediaUrls, setMediaUrls] = useState([""]);
     const [tags, setTags] = useState([""]);
-    const [localError, setLocalError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState(null);
     const [editableMessage, setEditableMessage] = useState("");
+    const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
     const [urlErrors, setUrlErrors] = useState({});
 
     const generateMessage = useCallback(() => {
+        if (!selectedTemplate) return "";
         return selectedTemplate.placeholders.reduce((msg, key) => {
             return msg.replace(new RegExp(`{${key}}`, "g"), formData[key] || "...");
         }, selectedTemplate.body);
     }, [selectedTemplate, formData]);
 
     useEffect(() => {
-        setEditableMessage(generateMessage());
-    }, [generateMessage]);
+        const fetchPost = async () => {
+            try {
+                const token = `${user.tokenType} ${user.accessToken}`;
+                const response = await axios.get(`/progress-updates/${id}`, {
+                    headers: { Authorization: token },
+                });
+
+                const data = response.data;
+                const template = templates.find(t => t.id === data.templateId);
+
+                setSelectedTemplate(template);
+                setFormData(data.placeholders || {});
+                setEditableMessage(data.generatedText);
+                setMediaUrls(data.mediaUrls.length ? data.mediaUrls : [""]);
+                setTags(data.tags.length ? data.tags : [""]);
+            } catch (err) {
+                setError("Failed to fetch post for editing.");
+                console.error(err);
+            }
+        };
+
+        if (user?.accessToken) {
+            fetchPost();
+        }
+    }, [id, user]);
+
+    useEffect(() => {
+        if (selectedTemplate) {
+            setEditableMessage(generateMessage());
+        }
+    }, [selectedTemplate, formData, generateMessage]);
 
     useEffect(() => {
         if (successMessage) {
@@ -63,9 +95,9 @@ const LearningProgress = () => {
     };
 
     const handleMediaUrlChange = (index, value) => {
-        const newUrls = [...mediaUrls];
-        newUrls[index] = value;
-        setMediaUrls(newUrls);
+        const updated = [...mediaUrls];
+        updated[index] = value;
+        setMediaUrls(updated);
 
         const isValid = /^https?:\/\/.+/.test(value.trim());
         setUrlErrors(prev => ({
@@ -85,21 +117,23 @@ const LearningProgress = () => {
     };
 
     const handleTagChange = (index, value) => {
-        const newTags = [...tags];
-        newTags[index] = value;
-        setTags(newTags);
+        const updated = [...tags];
+        updated[index] = value;
+        setTags(updated);
     };
 
     const addTag = () => setTags(prev => [...prev, ""]);
     const removeTag = (index) => setTags(prev => prev.filter((_, i) => i !== index));
 
     const validateForm = () => {
+        if (!selectedTemplate) return false;
+
         const missingFields = selectedTemplate.placeholders.filter(
             key => !formData[key]?.trim()
         );
 
         if (missingFields.length > 0) {
-            setLocalError(`Please fill in: ${missingFields.join(", ")}`);
+            setError(`Please fill in: ${missingFields.join(", ")}`);
             return false;
         }
 
@@ -115,7 +149,7 @@ const LearningProgress = () => {
                 });
                 return updated;
             });
-            setLocalError("Please correct the highlighted URL fields.");
+            setError("Please correct the highlighted URL fields.");
             return false;
         }
 
@@ -124,82 +158,56 @@ const LearningProgress = () => {
     };
 
     const handleSubmit = async () => {
-        if (!user?.accessToken) {
-            const msg = "You need to be logged in to post updates";
-            setLocalError(msg);
-            console.error(msg);
-            return;
-        }
-
         if (!validateForm()) return;
 
-        setLocalError(null);
-
+        const token = `${user.tokenType} ${user.accessToken}`;
         const payload = {
-            userId: user.id,
             templateId: selectedTemplate.id,
-            generatedText: editableMessage,
             placeholders: formData,
+            generatedText: editableMessage,
             mediaUrls: mediaUrls.filter(url => url.trim()),
             tags: tags.filter(tag => tag.trim()),
         };
 
-        console.log(payload)
-        const token = `${user.tokenType} ${user.accessToken}`;
-        console.log("🔐 Token being sent:", token);
-
         try {
             const response = await axiosFetch({
                 axiosInstance: axios,
-                method: "POST",
-                url: "/progress-updates",
+                method: "PUT",
+                url: `/progress-updates/${id}`,
                 data: payload,
-                headers: {
-                    Authorization: token,
-                },
+                headers: { Authorization: token },
             });
 
-            console.log("✅ Submission success:", response?.data);
-            setSuccessMessage("Progress update posted successfully!");
-            setFormData({});
-            setMediaUrls([""]);
-            setTags([""]);
-            setEditableMessage("");
-
-            navigate("/progress");
-        } catch (error) {
-            const errMsg =
-                error?.response?.data?.message ||
-                error?.response?.statusText ||
-                "An error occurred while posting the update.";
-
-            console.error("❌ Submission error:", error);
-            setLocalError(errMsg);
-            setSuccessMessage(null);
+            console.log("✅ Edit successful:", response?.data);
+            setSuccessMessage("Post updated successfully!");
+            setTimeout(() => navigate("/progress"), 2000);
+        } catch (err) {
+            console.error("❌ Edit failed:", err);
+            setError(err.response?.data?.message || "Failed to update the post.");
         }
     };
 
-    const handleTemplateChange = (e) => {
-        const template = templates.find(t => t.id === e.target.value);
-        if (template) {
-            setSelectedTemplate(template);
-            setFormData({});
-            setLocalError(null);
-        }
-    };
+    if (!selectedTemplate) {
+        return (
+            <div className="learning-container">
+                <div className="loading-spinner">Loading post data...</div>
+            </div>
+        );
+    }
 
     return (
         <div className="learning-container">
             <header className="learning-header">
-                <h2>Share Your Learning Journey</h2>
-                <p className="subtitle">Document and celebrate your progress with the community</p>
+                <h1>MasteryHub</h1>
+                <h2>Edit Your Learning Progress</h2>
+                <p className="subtitle">Update your learning journey with the community</p>
             </header>
 
             <div className="progress-form">
-                {(localError || apiError) && (
+                {(error) && (
                     <div className="alert error">
-                        {localError || apiError}
-                        {(localError?.includes("Session expired") || apiError?.includes("Session expired")) && (
+                        {error}
+                        {error?.includes("Session expired") && (
                             <button onClick={() => navigate("/login")} className="text-button">
                                 Go to Login
                             </button>
@@ -214,23 +222,12 @@ const LearningProgress = () => {
                 )}
 
                 <div className="form-section">
-                    <label className="form-label">Template Selection</label>
-                    <div className="template-selector">
-                        {templates.map(template => (
-                            <button
-                                key={template.id}
-                                className={`template-card ${selectedTemplate.id === template.id ? 'active' : ''}`}
-                                onClick={() => {
-                                    setSelectedTemplate(template);
-                                    setFormData({});
-                                }}
-                            >
-                                <h3>{template.title}</h3>
-                                <p className="template-preview">
-                                    {template.body.replace(/{[^}]+}/g, "[...]")}
-                                </p>
-                            </button>
-                        ))}
+                    <label className="form-label">Template</label>
+                    <div className="template-card active">
+                        <h3>{selectedTemplate.title}</h3>
+                        <p className="template-preview">
+                            {selectedTemplate.body.replace(/{[^}]+}/g, "[...]")}
+                        </p>
                     </div>
                 </div>
 
@@ -244,7 +241,7 @@ const LearningProgress = () => {
                                 type="text"
                                 value={formData[key] || ""}
                                 onChange={(e) => handleInputChange(key, e.target.value)}
-                                placeholder={`e.g. ${key === 'Experience' ? 'Challenging/Rewarding' : 'Enter ' + key}`}
+                                placeholder={`e.g. ${key === 'experience' ? 'challenging/rewarding' : 'Enter ' + key}`}
                                 className="form-input"
                             />
                         </div>
@@ -343,13 +340,13 @@ const LearningProgress = () => {
                 <div className="form-section">
                     <label className="form-label">Your Progress Message</label>
                     <div className="message-preview">
-            <textarea
-                value={editableMessage}
-                onChange={(e) => setEditableMessage(e.target.value)}
-                rows={4}
-                className="message-textarea"
-                placeholder="Your learning story will appear here..."
-            />
+                        <textarea
+                            value={editableMessage}
+                            onChange={(e) => setEditableMessage(e.target.value)}
+                            rows={4}
+                            className="message-textarea"
+                            placeholder="Your learning story will appear here..."
+                        />
                         <div className="character-count">
                             {editableMessage.length}/500 characters
                         </div>
@@ -364,14 +361,14 @@ const LearningProgress = () => {
                     {loading ? (
                         <>
                             <span className="spinner"></span>
-                            Sharing Your Progress...
+                            Updating Your Post...
                         </>
                     ) : (
                         <>
                             <svg viewBox="0 0 24 24" width="18" height="18">
-                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
                             </svg>
-                            Share With Community
+                            Update Post
                         </>
                     )}
                 </button>
@@ -380,4 +377,4 @@ const LearningProgress = () => {
     );
 };
 
-export default LearningProgress;
+export default EditLearningProgress;

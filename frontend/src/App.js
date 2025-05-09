@@ -12,9 +12,18 @@ import LearningProgress from "./pages/LearningProgress"; // relative path from p
 import Layout from "./components/Layout"; //
 import Unauthorized from "./pages/Unauthorized"
 import Profile from "./pages/Profile";
+
 import PostForm from "./pages/PostForm";
 import PostEdit from "./pages/PostEdit";
 import PostDetails from "./pages/PostDetails";
+
+
+import ForgotPassword from "./pages/ForgotPassword";
+import FollowPage from "./pages/FollowPage"
+import MyLearningProgress from "./pages/MyLearningProgress";
+import EditLearningProgress from "./pages/EditLearningProgress";
+import LearningProgressFeed from "./pages/LearningProgressFeed";
+
 
 function App() {
     return (
@@ -31,6 +40,7 @@ function App() {
                 <Route path="/test" element={<Test />} />
                 {/* Public Route: Sign-Up page */}
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
 
                 <Route path="/unauthorized" element={<Unauthorized/>} />
                 {/* Protected Route: User Dashboard (only for logged-in users) */}
@@ -39,21 +49,32 @@ function App() {
                     element={<ProtectedRoute element={<Layout><UserPage /></Layout>} roles={['ROLE_USER']} />}
                 />
                 <Route
-                    path="/profile"
+                    path="/profile/me"
                     element={<ProtectedRoute element={<Layout><Profile /></Layout>} roles={['ROLE_USER']} />}
+                />
+                <Route
+                    path="/follow"
+                    element={<ProtectedRoute element={<Layout><FollowPage /></Layout>} roles={['ROLE_USER']} />}
                 />
                 <Route
                     path="/progress/new"
                     element={
-                        <ProtectedRoute
-                            element={
-                                <Layout>
-                                    <LearningProgress />
-                                </Layout>
-                            }
-                            roles={['ROLE_USER']}
-                        />
-                    }
+                        <ProtectedRoute element={<Layout><LearningProgress /></Layout>} roles={['ROLE_USER']}/>}
+                />
+                <Route
+                    path="/progress"
+                    element={
+                        <ProtectedRoute element={<Layout><MyLearningProgress /></Layout>} roles={['ROLE_USER']}/>}
+                />
+                <Route
+                    path="/edit-progress/:id"
+                    element={
+                        <ProtectedRoute element={<Layout><EditLearningProgress /></Layout>} roles={['ROLE_USER']}/>}
+                />
+                <Route
+                    path="/progress-feed"
+                    element={
+                        <ProtectedRoute element={<Layout><LearningProgressFeed /></Layout>} roles={['ROLE_USER']}/>}
                 />
 
 

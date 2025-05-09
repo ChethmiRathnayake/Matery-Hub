@@ -10,6 +10,7 @@ import java.util.Map;
 public class LearningProgressUpdateResponse {
     private Long id;
     private Long userId;
+    private String username;  // Add this field
     private String templateId;
     private String generatedText;
     private Map<String, String> placeholders;
@@ -17,5 +18,4 @@ public class LearningProgressUpdateResponse {
     private List<String> tags;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
 }
