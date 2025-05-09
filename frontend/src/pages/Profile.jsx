@@ -5,6 +5,7 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import axios from "../api/axios";
 import useAxios from "../hooks/useAxios";
 import UserPosts from "./UserPosts";
+import ActivityTabs from "../components/ActivityTabs"
 
 
 const ProfilePage = () => {
@@ -65,7 +66,10 @@ const ProfilePage = () => {
                 {profile &&
                     <ProfileHeader key={profileVersion} id={user.id} user={profile} follow={follow} isOwnProfile={true}
                                    onProfileUpdate={refetchProfile}/>}
-
+                <ActivityTabs
+                    userId={user.id}
+                    isOwnProfile={true}
+                />
 
 
             </div>
