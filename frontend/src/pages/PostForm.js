@@ -1,100 +1,180 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../hooks/useAuthContext";
+import useAxios from "../hooks/useAxios";
 import axios from "../api/axios";
-import { AuthContext } from "../context/AuthContext";
-import "../components/PostForm.css"; // Make sure the path is correct
+import "../components/PostForm.css";
 
-export default function PostForm() {
-  const [caption, setCaption] = useState("");
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [localError, setLocalError] = useState(null);
-  const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+const PostCreate = () => {
+    const { user } = useAuthContext();
+    const navigate = useNavigate();
+    const { axiosFetch, error: apiError, loading } = useAxios();
+    const [formData, setFormData] = useState({
+        caption: "",  // Caption is the main field for your post
+        image: null,   // Handle the image upload
+    });
+    const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
 
-  const validateForm = () => {
-    if (!caption.trim()) {
-      setLocalError("Caption cannot be empty");
-      return false;
-    }
-    return true;
-  };
+    useEffect(() => {
+        if (successMessage) {
+            const timer = setTimeout(() => {
+                setSuccessMessage(null);
+                navigate("/post");  // After successful post creation, navigate to posts page
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [successMessage, navigate]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
 
-    if (!user?.accessToken) {
-      setLocalError("You need to be logged in to post updates");
-      return;
-    }
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setFormData(prev => ({ ...prev, image: file }));
+    };
 
-    if (!validateForm()) return;
+    const validateForm = () => {
+        if (!formData.caption.trim()) {
+            setError("Caption is required");
+            return false;
+        }
 
-    const formData = new FormData();
-    formData.append("caption", caption);
-    if (image) formData.append("image", image);
+        if (!formData.image) {
+            setError("An image is required");
+            return false;
+        }
 
-    const token = `${user.tokenType || "Bearer"} ${user.accessToken}`;
+        setError(null);
+        return true;
+    };
 
-    try {
-      await axios.post("/post", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: token,
-        },
-      });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-      setSuccessMessage("Post created successfully!");
-      setCaption("");
-      setImage(null);
-      navigate("/profile");
-    } catch (error) {
-      const errMsg =
-        error?.response?.data?.message ||
-        error?.response?.statusText ||
-        "An error occurred while posting the update.";
-      setLocalError(errMsg);
-    }
-  };
+        if (!user?.accessToken) {
+            setError("You need to be logged in to create a post");
+            return;
+        }
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      setImagePreview(URL.createObjectURL(file)); // Show preview
-    }
-  };
+        if (!validateForm()) return;
 
-  return (
-    <div className="page-container">
-      <form onSubmit={handleSubmit} className="post-form">
-        <h2>Create a Post</h2>
-        {localError && <p className="text-red-500">{localError}</p>}
-        {successMessage && <p className="text-green-500">{successMessage}</p>}
+        console.log(formData)
+        const formDataToSend = new FormData();
+        formDataToSend.append("caption", formData.caption);
+        formDataToSend.append("image", formData.image);
+        formDataToSend.append("userId", user.id);
 
-        <label>Caption:</label>
-        <textarea
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-          required
-        />
+        try {
+            console.log(formDataToSend)
+            const response = await axiosFetch({
+                axiosInstance: axios,
+                method: "POST",
+                url: "/posts",
+                data: formDataToSend,
+               config: {
+                                   headers: {
+                                       "Content-Type": "multipart/form-data",
+                                   },
+                               },
+            });
 
-        <label>Image:</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-        />
+            setSuccessMessage("Post created successfully!");
+            setFormData({
+                caption: "",
+                image: null,
+            });
+            navigate("/post");
+        } catch (error) {
+            const errMsg =
+                error?.response?.data?.message ||
+                error?.response?.statusText ||
+                "An error occurred while creating the post.";
+            setError(errMsg);
+        }
+    };
 
-        {imagePreview && (
-          <div className="image-preview">
-            <img src={imagePreview} alt="Preview" />
-          </div>
-        )}
+    return (
+        <div className="post-create-container">
+            <header className="post-create-header">
+                <h2>Create a New Post</h2>
+                <p className="subtitle">Share your thoughts with the world!</p>
+            </header>
 
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-  );
-}
+            <form onSubmit={handleSubmit} className="post-create-form">
+                {(error || apiError) && (
+                    <div className="alert error">
+                        {error || apiError}
+                        {(error?.includes("Session expired") || apiError?.includes("Session expired")) && (
+                            <button onClick={() => navigate("/login")} className="text-button">
+                                Go to Login
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                {successMessage && (
+                    <div className="alert success">
+                        {successMessage}
+                    </div>
+                )}
+
+                <div className="form-section">
+                    <label className="form-label">Post Details</label>
+                    <div className="form-grid">
+                        <div className="form-field">
+                            <label className="input-label">Caption*</label>
+                            <textarea
+                                name="caption"
+                                value={formData.caption}
+                                onChange={handleInputChange}
+                                placeholder="What are you thinking?"
+                                className="form-input"
+                                rows="3"
+                                required
+                            />
+                        </div>
+                        <div className="form-field">
+                            <label className="input-label">Image*</label>
+                            <input
+                                type="file"
+                                name="image"
+                                onChange={handleImageChange}
+                                className="form-input"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-actions">
+                    <button
+                        type="button"
+                        onClick={() => navigate("/post")}
+                        className="secondary-button"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="primary-button"
+                    >
+                        {loading ? (
+                            <>
+                                <span className="spinner"></span>
+                                Creating Post...
+                            </>
+                        ) : (
+                            "Create Post"
+                        )}
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
+};
+
+export default PostCreate;

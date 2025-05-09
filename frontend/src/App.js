@@ -60,7 +60,7 @@ function App() {
 
                       <Route path="/post/new" element={<PostForm />} />
                       <Route path="/post/edit/:id" element={<PostEdit />} />
-                       <Route path="/post/:id" element={<PostDetails />} />
+                      <Route path="/post/:id" element={<PostDetails />} />
 
 
                 {/* Optionally add more protected routes for other roles (e.g., admin) */}

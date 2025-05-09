@@ -44,7 +44,7 @@ export default function PostEdit() {
           Authorization: `${user.tokenType} ${user.accessToken}`,
         },
       });
-      navigate("/posts");
+      navigate("/post");
     } catch (err) {
       console.error("Failed to update post", err);
       setError("Failed to update post");
