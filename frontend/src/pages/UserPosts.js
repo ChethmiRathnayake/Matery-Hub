@@ -11,7 +11,7 @@ export default function UserPosts() {
     const fetchUserPosts = async () => {
       try {
         const token = `${user.tokenType} ${user.accessToken}`;
-        const response = await axios.get("/posts/me", {
+        const response = await axios.get("/posts", {
           headers: {
             Authorization: token,
           },

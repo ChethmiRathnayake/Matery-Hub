@@ -30,9 +30,10 @@ const useAxios = () => {
             };
 
             let result;
+            console.log(url)
             switch (method.toLowerCase()) {
                 case "get":
-                    console.log(url)
+
                     result = await axiosInstance.get(url, finalConfig);
                     break;
                 case "post":

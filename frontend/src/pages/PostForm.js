@@ -86,7 +86,7 @@ const PostCreate = () => {
                 caption: "",
                 image: null,
             });
-            navigate("/post");
+            navigate("/profile");
         } catch (error) {
             const errMsg =
                 error?.response?.data?.message ||
