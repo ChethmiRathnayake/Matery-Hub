@@ -11,10 +11,12 @@ import {
 import { useAuthContext } from "../hooks/useAuthContext";
 import axios from "../api/axios";
 import useAxios from "../hooks/useAxios";
+import { useNavigate } from 'react-router-dom';
 
 const UserCard = ({ user, onUnfollow,  showUnfollowButton = false  }) => {
     const { response: profile, error, loading, axiosFetch } = useAxios();
     const { user :cuser } = useAuthContext();
+    const navigate = useNavigate();
     console.log(cuser)
     console.log(user.id)
     const handleUnfollow = async () => {
@@ -41,6 +43,10 @@ const UserCard = ({ user, onUnfollow,  showUnfollowButton = false  }) => {
         : " ";
 
     console.log(user)
+    const handleCardClick = () => {
+        navigate(`/profile/${user.id}`);
+    };
+
     return (
         <Card
             sx={{
@@ -50,7 +56,9 @@ const UserCard = ({ user, onUnfollow,  showUnfollowButton = false  }) => {
                 p: 2,
                 borderRadius: 3,
                 boxShadow: 2,
+                cursor: 'pointer', // makes it clear it's clickable
             }}
+            onClick={handleCardClick}
         >
             <Box display="flex" alignItems="center">
                 <Avatar
@@ -74,13 +82,17 @@ const UserCard = ({ user, onUnfollow,  showUnfollowButton = false  }) => {
                 <Button
                     variant="outlined"
                     color="error"
-                    onClick={handleUnfollow}
+                    onClick={(e) => {
+                        e.stopPropagation(); // prevent card click
+                        handleUnfollow();
+                    }}
                     sx={{ minWidth: 100 }}
                 >
                     Unfollow
                 </Button>
             )}
         </Card>
+
     );
 };
 export default UserCard;
