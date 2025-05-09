@@ -1,5 +1,5 @@
 .container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 2rem auto;
     padding: 1rem 2rem;
     background-color: #f9f9f9;
@@ -94,3 +94,5 @@ button:hover {
     gap: 0.5rem;
     margin-bottom: 0.5rem;
 }
+
+
