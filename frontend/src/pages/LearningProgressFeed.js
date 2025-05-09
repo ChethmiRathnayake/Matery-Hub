@@ -56,20 +56,6 @@ const LearningProgressFeed = () => {
 
     return (
         <div className="user-page">
-            <header className="page-header">
-                <h1 className="page-title">MasteryHub</h1>
-                <div className="search-container">
-                    <FiSearch className="search-icon" />
-                    <input
-                        type="text"
-                        placeholder="Search updates, plans, users..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
-                    />
-                </div>
-            </header>
-
             <main className="main-content">
                 <div className="feed-controls">
                     <h2 className="feed-title">Learning Progress Feed</h2>
