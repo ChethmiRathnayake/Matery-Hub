@@ -7,18 +7,27 @@ import EditProfileInfoDialog from "./EditProfileInfoDialog";
 import emptyBanner from "../../assets/bannerTemplates/emptyBanner.png"
 import ContactInfoViewDialog from "./ContactInfoViewDialog"
 import ContactInfoEditDialog from "./EditContactInfoDialog";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "http://localhost:1010";
 const PLACEHOLDER_BANNER = emptyBanner;
 
-const ProfileHeader = ({ user, isOwnProfile, onProfileUpdate }) => {
+const ProfileHeader = ({ user, id,isOwnProfile,follow, onProfileUpdate }) => {
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [openBannerDialog, setOpenBannerDialog] = useState(false);
     const [profileData, setProfileData] = useState(user);
     const [openProfilePicDialog, setOpenProfilePicDialog] = useState(false);
     const [viewDialogOpen, setViewDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [followDialogOpen, setFollowDialogOpen] = useState(false);
+    const navigate = useNavigate();
 
+
+
+console.log(id)
+
+
+console.log(follow)
 
     const profileImageUrl = profileData?.profilePictureUrl
         ? `${BASE_URL}${profileData.profilePictureUrl}`
@@ -92,7 +101,10 @@ const ProfileHeader = ({ user, isOwnProfile, onProfileUpdate }) => {
             </div>
 
             {/* Info */}
-            <div className="mt-28 ml-[60px] pr-4 pb-4 space-y-1 relative">
+            {/* Info Section */}
+            <div className="mt-28 ml-[60px] pr-6 pb-6 pt-2 relative space-y-2">
+
+
                 <div className="flex items-center gap-2 relative">
                     <Typography variant="h4" sx={{fontWeight: 700, color: "#1a202c"}}>
                         {profileData.firstName} {profileData.lastName}
@@ -116,13 +128,83 @@ const ProfileHeader = ({ user, isOwnProfile, onProfileUpdate }) => {
                     )}
                 </div>
 
-                <Typography variant="h6" sx={{fontWeight: 500, color: "#4a5568"}}>
-                    {profileData.bio}
-                </Typography>
-                <Typography variant="body1" sx={{color: "#718096"}}>
-                    {profileData.location}
-                </Typography>
-                <Button onClick={() => setViewDialogOpen(true)}>Contact Info</Button>
+                {/* Bio */}
+                {profileData.bio && (
+                    <Typography
+                        variant="body1"
+                        sx={{
+                            fontSize: "1rem",
+                            fontWeight: 400,
+                            color: "#4A5568",
+                            lineHeight: 1.5,
+                        }}
+                    >
+                        {profileData.bio}
+                    </Typography>
+                )}
+
+                {/* Location */}
+                {profileData.location && (
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            fontSize: "0.95rem",
+                            color: "#718096",
+                        }}
+                    >
+                        {profileData.location}
+                    </Typography>
+                )}
+
+                {/* Contact Info Button */}
+                <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        textTransform: "none",
+                        fontSize: "0.85rem",
+                        borderRadius: "8px",
+                        mt: 1
+                    }}
+                    onClick={() => setViewDialogOpen(true)}
+                >
+                    Contact Info
+                </Button>
+
+                {/* Follower/Following */}
+                <div
+                    onClick={() =>
+                        navigate("/follow", {
+                            state: {
+                                userId: id,
+                                initialTab: "followers"
+                            }
+                        })
+                    }
+                    className="cursor-pointer hover:underline"
+                >
+                    <Typography variant="body2" sx={{ fontWeight: 500, color: "#3182CE" }}>
+
+                        {follow.followersCount || 0} Followers
+
+                    </Typography>
+                </div>
+
+                <div
+                    onClick={() =>
+                        navigate("/follow", {
+                            state: {
+                                userId: id,
+                                initialTab: "following"
+                            }
+                        })
+                    }
+                    className="cursor-pointer hover:underline"
+                >
+                    <Typography variant="body2" sx={{ fontWeight: 500, color: "#3182CE" }}>
+                        {follow.followingCount || 0} Following
+                    </Typography>
+                </div>
 
             </div>
 

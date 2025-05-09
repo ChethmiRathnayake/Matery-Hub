@@ -14,10 +14,11 @@ import Unauthorized from "./pages/Unauthorized"
 import Profile from "./pages/Profile";
 
 import ForgotPassword from "./pages/ForgotPassword";
-
+import FollowPage from "./pages/FollowPage"
 import MyLearningProgress from "./pages/MyLearningProgress";
 import EditLearningProgress from "./pages/EditLearningProgress";
 import LearningProgressFeed from "./pages/LearningProgressFeed";
+
 function App() {
     return (
 
@@ -44,6 +45,10 @@ function App() {
                 <Route
                     path="/profile/me"
                     element={<ProtectedRoute element={<Layout><Profile /></Layout>} roles={['ROLE_USER']} />}
+                />
+                <Route
+                    path="/follow"
+                    element={<ProtectedRoute element={<Layout><FollowPage /></Layout>} roles={['ROLE_USER']} />}
                 />
                 <Route
                     path="/progress/new"

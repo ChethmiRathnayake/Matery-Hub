@@ -6,7 +6,7 @@ import "./Layout.css";
 const Layout = ({ children }) => (
     <div className="app-layout">
         <Header />
-        <main className="main-content">{children}</main>
+        <main className="app-main-content">{children}</main>
         <Footer />
     </div>
 );
