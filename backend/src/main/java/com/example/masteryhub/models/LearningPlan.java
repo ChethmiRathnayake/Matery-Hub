@@ -17,12 +17,20 @@ import java.util.List;
 @Table(name = "learning_plan")
 public class LearningPlan {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "plan_id")
     private Long planId;
 
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "start_date")
     private LocalDate startDate;
+
+    @Column(name = "end_date")
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "learningPlan", cascade = CascadeType.ALL)

@@ -24,6 +24,10 @@ public class LearningPlanService {
 
     @Transactional
     public LearningPlanResponse createPlan(LearningPlanRequest requestDTO) {
+        if (requestDTO.getUserId() == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
         User user = userRepository.findById(requestDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -34,14 +38,16 @@ public class LearningPlanService {
         plan.setEndDate(requestDTO.getEndDate());
         plan.setUser(user);
 
-        List<PlanItem> items = requestDTO.getItems().stream().map(dto -> {
-            PlanItem item = new PlanItem();
-            item.setTopic(dto.getTopic());
-            item.setResourceLink(dto.getResourceLink());
-            item.setCompleted(dto.isCompleted());
-            item.setLearningPlan(plan); // set back-ref
-            return item;
-        }).collect(Collectors.toList());
+        List<PlanItem> items = requestDTO.getItems().stream()
+                .map(dto -> {
+                    PlanItem item = new PlanItem();
+                    item.setTopic(dto.getTopic());
+                    item.setResourceLink(dto.getResourceLink());
+                    item.setCompleted(dto.isCompleted());
+                    item.setLearningPlan(plan);
+                    return item;
+                })
+                .collect(Collectors.toList());
 
         plan.setPlanItems(items);
 

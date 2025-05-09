@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import {useAuthContext} from "../hooks/useAuthContext";
 
 const LearningPlanDetails = () => {
+    const { user } = useAuthContext();
     const { id } = useParams(); // planId from URL
     const [plan, setPlan] = useState(null);
     const [checkedItems, setCheckedItems] = useState({});
@@ -13,8 +15,8 @@ const LearningPlanDetails = () => {
         const fetchPlan = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const res = await axios.get(`http://localhost:1010/api/plans/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                const res = await axios.get(`/plans/${id}`, {
+                    headers: { 'Authorization': `${user.tokenType} ${user.accessToken}`, },
                 });
                 setPlan(res.data);
                 // Initialize all items as unchecked

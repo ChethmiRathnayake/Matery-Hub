@@ -12,11 +12,17 @@ import lombok.*;
 @Table(name = "plan_item")
 public class PlanItem {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_id")
     private Long itemId;
 
+    @Column(name = "topic")
     private String topic;
+
+    @Column(name = "resource_link")
     private String resourceLink;
+
+    @Column(name = "completed")
     private boolean completed;
 
     @ManyToOne(fetch = FetchType.LAZY)

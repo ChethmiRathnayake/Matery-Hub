@@ -65,4 +65,9 @@ public class LearningProgressUpdateController {
         progUpdateService.deleteProgressUpdate(id);
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "Works!";
+    }
+
 }
