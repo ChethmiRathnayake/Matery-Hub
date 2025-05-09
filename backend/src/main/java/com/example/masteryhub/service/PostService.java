@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -41,8 +42,8 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse createPost(String caption, MultipartFile image, String username) {
-        System.out.println("hbdh");
+    public PostResponse createPost(String caption, MultipartFile image, String username, String fileName) {
+        System.out.println("came innnn");
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -52,9 +53,15 @@ public class PostService {
 
         if (image != null && !image.isEmpty()) {
             try {
-                String imageUrl = saveImageAndReturnUrl(image);
-                post.setMediaUrl(imageUrl);
-            } catch (IOException e) {
+
+//                String filePath = post.getMediaUrl().replace("/uploads/", "");
+//                System.out.println(filePath);
+//                File file = new File("uploads/posts/" + filePath);
+
+
+                post.setMediaUrl("/uploads/" + fileName);
+
+            } catch (Exception e) {
                 throw new RuntimeException("Failed to upload image", e);
             }
         }

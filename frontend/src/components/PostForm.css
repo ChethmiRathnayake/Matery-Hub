@@ -1,4 +1,4 @@
-body {
+postbody {
   margin: 0;
   padding: 0;
   font-family: "Segoe UI", sans-serif;
@@ -9,7 +9,7 @@ body {
   justify-content: center;
 }
 
-form {
+postform {
   background: white;
   padding: 2.5rem 3rem;
   border-radius: 16px;
@@ -21,12 +21,12 @@ form {
   gap: 1.2rem;
 }
 
-form label {
+postform label {
   font-weight: 800;
   color: #333;
 }
 
-form textarea {
+postorm textarea {
   resize: none;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -41,7 +41,7 @@ form input[type="file"] {
   margin-top: 0.3rem;
 }
 
-form button {
+postform button {
   background: linear-gradient(to right, #fc00ff, #00dbde);
   border: none;
   padding: 0.8rem;
@@ -53,16 +53,16 @@ form button {
   transition: background 0.3s ease;
 }
 
-form button:hover {
+postform button:hover {
   background: linear-gradient(to right, #6a11cb, #2575fc);
 }
 
-.image-preview {
+.post-image-preview {
   margin-top: 1rem;
   text-align: center;
 }
 
-.image-preview img {
+.post-image-preview img {
   max-width: 100%;
   max-height: 280px;
   border-radius: 12px;

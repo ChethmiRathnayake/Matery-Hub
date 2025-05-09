@@ -1,14 +1,19 @@
 package com.example.masteryhub.controller;
 
+import com.example.masteryhub.DTO.request.UserProfileRequest;
 import com.example.masteryhub.DTO.response.PostResponse;
+import com.example.masteryhub.models.User;
+import com.example.masteryhub.service.FileUploadService;
 import com.example.masteryhub.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -18,6 +23,9 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+
+    @Autowired
+    private FileUploadService fileUploadService;
 
     @GetMapping
     public ResponseEntity<List<PostResponse>> getAllPosts() {
@@ -42,12 +50,21 @@ public class PostController {
 
             @RequestParam("caption") String caption,
             @RequestParam(value = "image", required = false) MultipartFile image,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
-        String username = userDetails.getUsername();
-        System.out.println("jii");
-        PostResponse createdPost = postService.createPost(caption, image, username);
-        return ResponseEntity.ok(createdPost);
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String username = userDetails.getUsername();
+
+            // Upload the profile picture and get the file name
+            String fileName = fileUploadService.uploadPostFile(image);
+
+            // Update the user's profile with the new profile picture URL (relative path)
+            PostResponse createdPost = postService.createPost(caption, image, username,fileName);
+
+            System.out.println("postss");
+            return ResponseEntity.ok(createdPost);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new PostResponse());
+        }
     }
 
     @PutMapping("/{id}/caption")

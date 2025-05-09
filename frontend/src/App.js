@@ -79,9 +79,9 @@ function App() {
 
 
 
-                      <Route path="/post/new" element={<PostForm />} />
-                      <Route path="/post/edit/:id" element={<PostEdit />} />
-                      <Route path="/post/:id" element={<PostDetails />} />
+                      <Route path="/post/new" element={<Layout><PostForm /></Layout>} />
+                      <Route path="/post/edit/:id" element={<Layout><PostEdit /></Layout>} />
+                      <Route path="/post/:id" element={<Layout><PostDetails /></Layout>} />
 
 
                 {/* Optionally add more protected routes for other roles (e.g., admin) */}
