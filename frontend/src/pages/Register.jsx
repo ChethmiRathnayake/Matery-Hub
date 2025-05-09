@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { FaGoogle, FaFacebookF, FaTwitter } from "react-icons/fa";
-import signupbg from "../assets/loginbg.jpg"; // Use same or a different background
+import signupbg from "../assets/loginbg.jpg";
+import useAxios from "../hooks/useAxios";
+import axios from "../api/axios"; // Use same or a different background
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
     const [formData, setFormData] = useState({
@@ -11,6 +15,14 @@ const Signup = () => {
         password: "",
         confirmPassword: "",
     });
+    const { response: profile, error, loading, axiosFetch } = useAxios();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (profile) {
+            navigate("/user");
+        }
+    }, [profile, navigate]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,6 +32,13 @@ const Signup = () => {
         e.preventDefault();
         // Handle form submission logic here
         console.log(formData);
+        axiosFetch({
+            axiosInstance: axios,
+            method: "POST",
+            url: `/auth/register`,
+            data: formData,
+        });
+
     };
 
     return (
