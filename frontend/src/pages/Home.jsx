@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 
+
 const Home = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Home = () => {
              {/* Common navbar */}
             <div className="home-container">
                 <h1>Mastery Hub develop your skills</h1>
+
 
             </div>
         </div>

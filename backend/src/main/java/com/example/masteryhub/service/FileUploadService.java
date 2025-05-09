@@ -39,4 +39,24 @@ public class FileUploadService {
         // Return the relative file path (you could use a full URL if necessary)
         return uniqueFileName;
     }
+
+    @Value("${post.upload-dir}")
+    private String postUploadDir;
+
+    public String uploadPostFile(MultipartFile file) throws IOException {
+        File directory = new File(postUploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        String uniqueFileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+        Path filePath = Paths.get(postUploadDir, uniqueFileName);
+
+        Files.copy(file.getInputStream(), filePath);
+
+        return uniqueFileName;
+    }
+
+
+
 }

@@ -13,15 +13,22 @@ import Layout from "./components/Layout"; //
 import Unauthorized from "./pages/Unauthorized"
 import Profile from "./pages/Profile";
 
-import ForgotPassword from "./pages/ForgotPassword";
+import PostForm from "./pages/PostForm";
+import PostEdit from "./pages/PostEdit";
+import PostDetails from "./pages/PostDetails";
+import OtherUserProfilePage from "./pages/OtherUserProfilePage";
 
+import ForgotPassword from "./pages/ForgotPassword";
+import FollowPage from "./pages/FollowPage"
 import MyLearningProgress from "./pages/MyLearningProgress";
 import EditLearningProgress from "./pages/EditLearningProgress";
 import LearningProgressFeed from "./pages/LearningProgressFeed";
+
 import LearningPlan from "./pages/LearningPlan";
 import LearningPlanList from "./pages/LearningPlanList";
 import LearningPlanEdit from "./pages/LearningPlanEdit";
 import LearningPlanDetails from "./pages/LearningPlanDetails";
+
 function App() {
     return (
 
@@ -48,6 +55,13 @@ function App() {
                 <Route
                     path="/profile/me"
                     element={<ProtectedRoute element={<Layout><Profile /></Layout>} roles={['ROLE_USER']} />}
+                />
+
+                <Route path="/profile/:profileId"
+                       element={<ProtectedRoute element={<Layout><OtherUserProfilePage  /></Layout>} roles={['ROLE_USER']} />} />
+                <Route
+                    path="/follow"
+                    element={<ProtectedRoute element={<Layout><FollowPage /></Layout>} roles={['ROLE_USER']} />}
                 />
                 <Route
                     path="/progress/new"
@@ -85,6 +99,13 @@ function App() {
                     element={
                         <ProtectedRoute element={<Layout><LearningPlanDetails /></Layout>} roles={['ROLE_USER']}/>}
                 />
+
+
+
+                      <Route path="/post/new" element={<Layout><PostForm /></Layout>} />
+                      <Route path="/post/edit/:id" element={<Layout><PostEdit /></Layout>} />
+                      <Route path="/post/:id" element={<Layout><PostDetails /></Layout>} />
+
 
                 {/* Optionally add more protected routes for other roles (e.g., admin) */}
                 {/* <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} roles={['ROLE_ADMIN']} />} /> */}

@@ -56,20 +56,6 @@ const LearningProgressFeed = () => {
 
     return (
         <div className="user-page">
-            <header className="page-header">
-                <h1 className="page-title">MasteryHub</h1>
-                <div className="search-container">
-                    <FiSearch className="search-icon" />
-                    <input
-                        type="text"
-                        placeholder="Search updates, plans, users..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
-                    />
-                </div>
-            </header>
-
             <main className="main-content">
                 <div className="feed-controls">
                     <h2 className="feed-title">Learning Progress Feed</h2>
@@ -114,24 +100,18 @@ const LearningProgressFeed = () => {
                                     <p className="update-text">{update.generatedText}</p>
 
                                     {update.mediaUrls?.length > 0 && (
-                                        <div className="media-grid">
+                                        <div className="media-links">
                                             {update.mediaUrls.map((url, i) => (
-                                                url.match(/\.(jpeg|jpg|gif|png|webp|bmp|svg)$/i) ? (
-                                                    <div key={i} className="media-item">
-                                                        <img src={url} alt={`media-${i}`} className="media-image" />
-                                                    </div>
-                                                ) : (
-                                                    <a
-                                                        key={i}
-                                                        href={url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="media-link"
-                                                    >
-                                                        <FiShare2 className="link-icon" />
-                                                        <span>View Resource</span>
-                                                    </a>
-                                                )
+                                                <a
+                                                    key={i}
+                                                    href={url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="media-link"
+                                                >
+                                                    <FiShare2 className="link-icon" />
+                                                    <span>{url}</span>
+                                                </a>
                                             ))}
                                         </div>
                                     )}
