@@ -16,7 +16,7 @@ import Profile from "./pages/Profile";
 import PostForm from "./pages/PostForm";
 import PostEdit from "./pages/PostEdit";
 import PostDetails from "./pages/PostDetails";
-
+import OtherUserProfilePage from "./pages/OtherUserProfilePage";
 
 import ForgotPassword from "./pages/ForgotPassword";
 import FollowPage from "./pages/FollowPage"
@@ -52,6 +52,9 @@ function App() {
                     path="/profile/me"
                     element={<ProtectedRoute element={<Layout><Profile /></Layout>} roles={['ROLE_USER']} />}
                 />
+
+                <Route path="/profile/:profileId"
+                       element={<ProtectedRoute element={<Layout><OtherUserProfilePage  /></Layout>} roles={['ROLE_USER']} />} />
                 <Route
                     path="/follow"
                     element={<ProtectedRoute element={<Layout><FollowPage /></Layout>} roles={['ROLE_USER']} />}
