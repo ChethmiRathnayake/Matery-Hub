@@ -74,11 +74,11 @@ const PostCreate = () => {
                 method: "POST",
                 url: "/posts",
                 data: formDataToSend,
-               config: {
-                                   headers: {
-                                       "Content-Type": "multipart/form-data",
-                                   },
-                               },
+                config: {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                },
             });
 
             setSuccessMessage("Post created successfully!");
@@ -97,84 +97,47 @@ const PostCreate = () => {
     };
 
     return (
-        <div className="post-create-container">
-            <header className="post-create-header">
-                <h2>Create a New Post</h2>
-                <p className="subtitle">Share your thoughts with the world!</p>
-            </header>
+        <div className="post-body">
+            <form onSubmit={handleSubmit} className="post-form">
+                {error && <div className="alert error">{error}</div>}
+                {successMessage && <div className="alert success">{successMessage}</div>}
 
-            <form onSubmit={handleSubmit} className="post-create-form">
-                {(error || apiError) && (
-                    <div className="alert error">
-                        {error || apiError}
-                        {(error?.includes("Session expired") || apiError?.includes("Session expired")) && (
-                            <button onClick={() => navigate("/login")} className="text-button">
-                                Go to Login
-                            </button>
-                        )}
+                <div>
+                    <label htmlFor="caption">Caption</label>
+                    <textarea
+                        id="caption"
+                        name="caption"
+                        value={formData.caption}
+                        onChange={handleInputChange}
+                        placeholder="What are you thinking?"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="image">Image</label>
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        onChange={handleImageChange}
+                        required
+                    />
+                </div>
+
+                {formData.image && (
+                    <div className="post-image-preview">
+                        <img src={URL.createObjectURL(formData.image)} alt="Preview" />
                     </div>
                 )}
 
-                {successMessage && (
-                    <div className="alert success">
-                        {successMessage}
-                    </div>
-                )}
-
-                <div className="form-section">
-                    <label className="form-label">Post Details</label>
-                    <div className="form-grid">
-                        <div className="form-field">
-                            <label className="input-label">Caption*</label>
-                            <textarea
-                                name="caption"
-                                value={formData.caption}
-                                onChange={handleInputChange}
-                                placeholder="What are you thinking?"
-                                className="form-input"
-                                rows="3"
-                                required
-                            />
-                        </div>
-                        <div className="form-field">
-                            <label className="input-label">Image*</label>
-                            <input
-                                type="file"
-                                name="image"
-                                onChange={handleImageChange}
-                                className="form-input"
-                                required
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="form-actions">
-                    <button
-                        type="button"
-                        onClick={() => navigate("/post")}
-                        className="secondary-button"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="primary-button"
-                    >
-                        {loading ? (
-                            <>
-                                <span className="spinner"></span>
-                                Creating Post...
-                            </>
-                        ) : (
-                            "Create Post"
-                        )}
-                    </button>
-                </div>
+                <button type="submit" disabled={loading}>
+                    {loading ? "Creating Post..." : "Create Post"}
+                </button>
             </form>
         </div>
     );
+
 };
 
 export default PostCreate;
