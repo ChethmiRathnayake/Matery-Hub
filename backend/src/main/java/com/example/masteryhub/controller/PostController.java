@@ -1,5 +1,6 @@
 package com.example.masteryhub.controller;
 
+import com.example.masteryhub.DTO.request.CaptionUpdateRequest;
 import com.example.masteryhub.DTO.request.UserProfileRequest;
 import com.example.masteryhub.DTO.response.PostResponse;
 import com.example.masteryhub.models.User;
@@ -68,11 +69,10 @@ public class PostController {
     }
 
     @PutMapping("/{id}/caption")
-    public ResponseEntity<Void> updateCaption(@PathVariable Long id, @RequestBody String caption) {
-        postService.updateCaption(id, caption);
+    public ResponseEntity<Void> updateCaption(@PathVariable Long id, @RequestBody CaptionUpdateRequest request) {
+        postService.updateCaption(id, request.getCaption());
         return ResponseEntity.noContent().build();
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);

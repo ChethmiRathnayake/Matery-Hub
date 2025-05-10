@@ -103,7 +103,10 @@ const SignIn = () => {
 
                     {/* Social Login Icons */}
                     <div className="flex justify-center gap-6 mb-4">
-                        <a href="#" className="text-red-500 hover:scale-110 transition-transform">
+                        <a
+                            href="http://localhost:1010/oauth2/authorization/google"
+                            className="text-red-500 hover:scale-110 transition-transform"
+                        >
                             <FaGoogle size={30}/>
                         </a>
                         <a href="#" className="text-blue-600 hover:scale-110 transition-transform">
