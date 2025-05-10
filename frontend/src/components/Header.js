@@ -6,16 +6,15 @@ import { useAuthContext } from '../hooks/useAuthContext'
 import "./Header.css";
 import {
     FaSearch, FaUserCircle, FaPlusCircle, FaClipboardList,
-    FaCompass, FaBell, FaSignOutAlt, FaUser, FaCog
+    FaCompass, FaBell, FaSignOutAlt, FaUser, FaCog, FaTasks
 } from "react-icons/fa";
 
 const Header = () => {
-    const { user} = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef();
 
     const { logout } = useLogout();
-
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -59,6 +58,10 @@ const Header = () => {
                             <FaClipboardList className="nav-icon" />
                             Plan
                         </Link>
+                        <Link to="/progress" className="nav-link">
+                            <FaTasks className="nav-icon" />
+                            Progress
+                        </Link>
                         <Link to="/explore" className="nav-link">
                             <FaCompass className="nav-icon" />
                             Explore
@@ -67,7 +70,6 @@ const Header = () => {
                             <FaBell className="nav-icon" />
                             Alerts
                         </Link>
-
 
                         <div className="profile-dropdown" ref={dropdownRef}>
                             <div className="avatar-button" onClick={() => setShowDropdown(prev => !prev)}>
