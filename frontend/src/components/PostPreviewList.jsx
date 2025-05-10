@@ -53,7 +53,7 @@ const PostPreviewList = ({ userId, isOwnProfile }) => {
                                 />
                             )}
                             <p className="mt-2 text-sm">{post.caption}</p>
-                            <p className="text-xs text-gray-500">{createdDate}</p> {/* Added date */}
+                            <p className="text-xs text-gray-500">{createdDate}</p>
                         </div>
                     );
                 })}

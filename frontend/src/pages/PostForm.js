@@ -10,7 +10,7 @@ const PostCreate = () => {
     const navigate = useNavigate();
     const { axiosFetch, error: apiError, loading } = useAxios();
     const [formData, setFormData] = useState({
-        caption: "",  // Caption is the main field for your post
+        caption: "",
         image: null,   // Handle the image upload
     });
     const [error, setError] = useState(null);
@@ -20,7 +20,7 @@ const PostCreate = () => {
         if (successMessage) {
             const timer = setTimeout(() => {
                 setSuccessMessage(null);
-                navigate("/post");  // After successful post creation, navigate to posts page
+                navigate("/post");
             }, 3000);
             return () => clearTimeout(timer);
         }
