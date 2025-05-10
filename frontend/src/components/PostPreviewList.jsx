@@ -29,6 +29,7 @@ const PostPreviewList = ({ userId, isOwnProfile }) => {
                 {recentPosts.map((post) => {
                     const mediaUrl = post.mediaUrl ? `${BASE_URL}${post.mediaUrl}` : "";
                     const isVideo = post.mediaUrl && /\.(mp4|webm|ogg)$/i.test(post.mediaUrl);
+                    const createdDate = new Date(post.createdAt).toLocaleDateString();
 
                     return (
                         <div
@@ -52,6 +53,7 @@ const PostPreviewList = ({ userId, isOwnProfile }) => {
                                 />
                             )}
                             <p className="mt-2 text-sm">{post.caption}</p>
+                            <p className="text-xs text-gray-500">{createdDate}</p> {/* Added date */}
                         </div>
                     );
                 })}
