@@ -83,6 +83,11 @@ function App() {
                     element={
                         <ProtectedRoute element={<Layout><EditLearningProgress /></Layout>} roles={['ROLE_USER']}/>}
                 />
+                <Route
+                    path="/progress-feed"
+                    element={
+                        <ProtectedRoute element={<Layout><LearningProgressFeed /></Layout>} roles={['ROLE_USER']}/>}
+                />
 
                 <Route
                     path="/plan"
@@ -104,6 +109,7 @@ function App() {
                     element={
                         <ProtectedRoute element={<Layout><LearningPlanDetails /></Layout>} roles={['ROLE_USER']}/>}
                 />
+
 
 
 

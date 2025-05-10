@@ -82,52 +82,56 @@ const LearningPlan = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!user?.accessToken) {
-            setError("You need to be logged in to create a plan");
+        // Clear previous messages
+        setError(null);
+        setSuccessMessage(null);
+
+        // Basic validation
+        if (!formData.title.trim()) {
+            setError("Title is required");
             return;
         }
 
-        if (!validateForm()) return;
-
-        const payload = {
-            userId: user.id,
-            title: formData.title,
-            description: formData.description,
-            startDate: formData.startDate,
-            endDate: formData.endDate,
-            items: planItems.map(item => ({
-                topic: item.topic,
-                resourceLink: item.resourceLink,
-                completed: item.completed
-            }))
-        };
-
         try {
-            const response = await axiosFetch({
-                axiosInstance: axios,
-                method: "POST",
-                url: "/plans",
-                data: payload,
+            const payload = {
+                userId: user?.id,
+                title: formData.title,
+                description: formData.description,
+                startDate: new Date(formData.startDate).toISOString().split('T')[0],
+                endDate: new Date(formData.endDate).toISOString().split('T')[0],
+                items: planItems.map(item => ({
+                    topic: item.topic,
+                    resourceLink: item.resourceLink,
+                    completed: item.completed
+                }))
+            };
+
+            const response = await axios.post('/plans', payload, {
                 headers: {
-                    Authorization: `${user.tokenType} ${user.accessToken}`,
-                },
+                    'Authorization': `${user.tokenType} ${user.accessToken}`,
+                    'Content-Type': 'application/json'
+                }
             });
 
-            setSuccessMessage("Learning plan created successfully!");
-            setFormData({
-                title: "",
-                description: "",
-                startDate: "",
-                endDate: ""
-            });
-            setPlanItems([{ topic: "", resourceLink: "", completed: false }])
-            navigate("/plans");
+            if (response.status === 201) {
+                setSuccessMessage("Plan created successfully!");
+                // Reset form after 2 seconds
+                setTimeout(() => {
+                    setFormData({
+                        title: "",
+                        description: "",
+                        startDate: "",
+                        endDate: ""
+                    });
+                    setPlanItems([{ topic: "", resourceLink: "", completed: false }]);
+                    navigate("/plans");
+                }, 2000);
+            }
         } catch (error) {
-            const errMsg =
-                error?.response?.data?.message ||
-                error?.response?.statusText ||
-                "An error occurred while creating the plan.";
-            setError(errMsg);
+            console.error("Submission error:", error);
+            const errorMsg = error.response?.data?.message ||
+                "Failed to create learning plan. Please try again.";
+            setError(errorMsg);
         }
     };
 
@@ -135,7 +139,7 @@ const LearningPlan = () => {
         <div className="learning-plan-container">
             <header className="learning-plan-header">
                 <h2>Create Your Learning Plan</h2>
-                <p className="subtitle">Organize your learning journey with clear goals and resources</p>
+                <center><p className="subtitle">Organize your learning journey with clear goals and resources</p></center>
             </header>
 
             <form onSubmit={handleSubmit} className="learning-plan-form">
@@ -156,53 +160,74 @@ const LearningPlan = () => {
                     </div>
                 )}
 
-                <div className="form-section">
-                    <label className="form-label">Plan Overview</label>
-                    <div className="form-grid">
-                        <div className="form-field">
-                            <label className="input-label">Title*</label>
+                <div className="plan-overview-section">
+                    <div className="plan-overview-header">
+                        <h3 className="plan-overview-title">Plan Overview</h3>
+                    </div>
+
+                    <div className="plan-overview-grid">
+                        {/* Title Field */}
+                        <div className="plan-overview-field">
+                            <label className="plan-overview-label required">Title</label>
                             <input
                                 type="text"
                                 name="title"
                                 value={formData.title}
                                 onChange={handleInputChange}
                                 placeholder="e.g. Mastering React in 3 Months"
-                                className="form-input"
+                                className="plan-overview-input"
                                 required
                             />
                         </div>
-                        <div className="form-field">
-                            <label className="input-label">Description</label>
+
+                        {/* Description Field */}
+                        <div className="plan-overview-field">
+                            <label className="plan-overview-label">Description</label>
                             <textarea
                                 name="description"
                                 value={formData.description}
                                 onChange={handleInputChange}
                                 placeholder="Brief description of your learning goals"
-                                className="form-input"
+                                className="plan-overview-input plan-overview-textarea"
                                 rows="3"
                             />
                         </div>
-                        <div className="form-field">
-                            <label className="input-label">Start Date*</label>
-                            <input
-                                type="date"
-                                name="startDate"
-                                value={formData.startDate}
-                                onChange={handleInputChange}
-                                className="form-input"
-                                required
-                            />
+
+                        {/* Start Date Field */}
+                        <div className="plan-overview-field">
+                            <label className="plan-overview-label required">Start Date</label>
+                            <div className="date-input-container">
+                                <input
+                                    type="date"
+                                    name="startDate"
+                                    value={formData.startDate}
+                                    onChange={handleInputChange}
+                                    className="plan-overview-input"
+                                    required
+                                />
+                                <svg className="date-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
+                                </svg>
+                            </div>
                         </div>
-                        <div className="form-field">
-                            <label className="input-label">End Date*</label>
-                            <input
-                                type="date"
-                                name="endDate"
-                                value={formData.endDate}
-                                onChange={handleInputChange}
-                                className="form-input"
-                                required
-                            />
+
+                        {/* End Date Field */}
+                        <div className="plan-overview-field">
+                            <label className="plan-overview-label required">End Date</label>
+                            <div className="date-input-container">
+                                <input
+                                    type="date"
+                                    name="endDate"
+                                    value={formData.endDate}
+                                    onChange={handleInputChange}
+                                    className="plan-overview-input"
+                                    required
+                                    min={formData.startDate}
+                                />
+                                <svg className="date-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>

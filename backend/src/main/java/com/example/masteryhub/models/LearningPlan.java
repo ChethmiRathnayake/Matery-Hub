@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "learning_plan")
 public class LearningPlan {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // This is crucial
     @Column(name = "plan_id")
     private Long planId;
 

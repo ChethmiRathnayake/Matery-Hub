@@ -1,98 +1,499 @@
-.container {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 1rem 2rem;
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+/* Base Styles */
+.learning-plan-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-h2 {
+.learning-plan-header {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
 }
 
-form {
-    margin-bottom: 2rem;
+.learning-plan-header h2 {
+    font-size: 2rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
 }
 
-input,
-textarea {
+.subtitle {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* Form Styles */
+.learning-plan-form {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.form-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1.25rem;
+    font-size: 1.1rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-field {
+    margin-bottom: 1.25rem;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #34495e;
+    font-size: 0.95rem;
+}
+
+.form-input {
     width: 100%;
-    padding: 0.5rem;
-    margin-bottom: 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background-color: #f9f9f9;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    background-color: white;
+}
+
+textarea.form-input {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Items Container */
+.items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.item-card {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.item-card:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.item-header h4 {
+    margin: 0;
+    color: #2c3e50;
     font-size: 1rem;
 }
 
-.item-inputs {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-.item-inputs input {
-    flex: 1;
-}
-
-button {
-    padding: 0.5rem 1rem;
-    margin-right: 0.5rem;
+.remove-button {
+    background: none;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-
-.add-btn {
-    background-color: #4caf50;
-    color: white;
-}
-
-.submit-btn {
-    background-color: #2196f3;
-    color: white;
-}
-
-.delete-btn {
-    background-color: #f44336;
-    color: white;
-}
-
-.plan {
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background-color: #fff;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-.plan-title {
+    color: #e74c3c;
     font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+    transition: transform 0.2s;
 }
 
-.progress {
-    margin-top: 0.5rem;
-    font-weight: 500;
+.remove-button:hover {
+    transform: scale(1.2);
 }
 
-.topic-list {
-    list-style: none;
-    padding-left: 0;
+.item-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
 }
 
-.topic-list li {
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon svg {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7f8c8d;
+}
+
+.input-with-icon .form-input {
+    padding-left: 2.5rem;
+}
+
+.link-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Buttons */
+.add-button {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 0.5rem;
 }
 
+.add-button:hover {
+    background: #2980b9;
+}
 
+.add-button svg {
+    stroke: white;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.primary-button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.75rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.primary-button:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+.primary-button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.secondary-button {
+    background: white;
+    color: #3498db;
+    border: 1px solid #3498db;
+    padding: 0.75rem 1.75rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.secondary-button:hover {
+    background: #f0f7fd;
+}
+
+/* Alerts */
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.alert.error {
+    background-color: #fef0f0;
+    color: #f56565;
+    border: 1px solid #fed7d7;
+}
+
+.alert.success {
+    background-color: #f0fff4;
+    color: #48bb78;
+    border: 1px solid #c6f6d5;
+}
+
+.text-button {
+    background: none;
+    border: none;
+    color: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 1rem;
+    font-weight: 500;
+}
+
+/* Spinner */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .learning-plan-container {
+        padding: 1rem;
+    }
+
+    .learning-plan-form {
+        padding: 1.5rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .primary-button, .secondary-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Plan Overview Section */
+.plan-overview-section {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2.5rem;
+}
+
+.plan-overview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.plan-overview-title {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin: 0;
+    font-weight: 600;
+}
+
+.plan-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.plan-overview-field {
+    margin-bottom: 1.25rem;
+}
+
+.plan-overview-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #34495e;
+    font-size: 0.95rem;
+}
+
+.plan-overview-label.required:after {
+    content: " *";
+    color: #e74c3c;
+}
+
+.plan-overview-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background-color: #f9f9f9;
+}
+
+.plan-overview-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    background-color: white;
+}
+
+.plan-overview-input::placeholder {
+    color: #95a5a6;
+    opacity: 1;
+}
+
+.plan-overview-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.date-input-container {
+    position: relative;
+}
+
+.date-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7f8c8d;
+    pointer-events: none;
+}
+
+/* Date picker customization */
+.plan-overview-input[type="date"] {
+    appearance: none;
+    padding-right: 2.5rem;
+}
+
+.plan-overview-input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .plan-overview-section {
+        padding: 1.5rem;
+    }
+
+    .plan-overview-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Remove Item Button Styles */
+.remove-button {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin-left: 0.5rem;
+}
+
+.remove-button:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+    transform: scale(1.1);
+}
+
+.remove-button:disabled {
+    color: #bdc3c7;
+    cursor: not-allowed;
+    background-color: transparent;
+}
+
+.remove-button:disabled:hover {
+    transform: none;
+    background-color: transparent;
+}
+
+.remove-button svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2;
+}
+
+/* Item Header Container */
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.item-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    .remove-button {
+        width: 28px;
+        height: 28px;
+        padding: 0.4rem;
+    }
+
+    .remove-button svg {
+        width: 14px;
+        height: 14px;
+    }
+}

@@ -2,12 +2,17 @@ package com.example.masteryhub.controller;
 
 import com.example.masteryhub.DTO.request.LearningPlanRequest;
 import com.example.masteryhub.DTO.response.LearningPlanResponse;
+import com.example.masteryhub.DTO.response.PlanItemResponse;
 import com.example.masteryhub.service.LearningPlanService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/plans")
@@ -16,9 +21,23 @@ public class LearningPlanController {
     private final LearningPlanService learningPlanService;
 
     @PostMapping
-    public ResponseEntity<LearningPlanResponse> createPlan(@RequestBody LearningPlanRequest requestDTO) {
-        LearningPlanResponse responseDTO = learningPlanService.createPlan(requestDTO);
-        return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<?> createPlan(@RequestBody LearningPlanRequest requestDTO) {
+        try {
+            LearningPlanResponse responseDTO = learningPlanService.createPlan(requestDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ErrorResponse("Failed to create learning plan"));
+        }
+    }
+
+    // Add this inner class
+    @Data
+    @AllArgsConstructor
+    private static class ErrorResponse {
+        private String message;
     }
 
     @GetMapping("/user/{userId}")
@@ -48,6 +67,22 @@ public class LearningPlanController {
     public ResponseEntity<Void> deletePlan(@PathVariable Long id) {
         learningPlanService.deletePlan(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{planId}/items/{itemId}")
+    public ResponseEntity<PlanItemResponse> updateItemStatus(
+            @PathVariable Long planId,
+            @PathVariable Long itemId,
+            @RequestBody Map<String, Boolean> statusUpdate) {
+
+        if (!statusUpdate.containsKey("completed")) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        boolean completed = statusUpdate.get("completed");
+        PlanItemResponse updatedItem = learningPlanService.updateItemStatus(planId, itemId, completed);
+
+        return ResponseEntity.ok(updatedItem);
     }
 
     @GetMapping("/test")

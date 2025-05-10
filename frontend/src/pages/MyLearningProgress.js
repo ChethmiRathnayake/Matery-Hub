@@ -92,11 +92,8 @@ const MyLearningProgress = () => {
 
     return (
         <div className="my-progress-container">
-            <header className="progress-header">
-                <div className="header-content">
-                    <h1>My Learning Journey</h1>
-                    <p className="subtitle">Track and manage your progress updates</p>
-                </div>
+            <div className="progress-header-container">
+                <h1 className="progress-title">My Learning Progress</h1>
                 <button
                     className="primary-button new-post-button"
                     onClick={() => navigate("/progress/new")}
@@ -106,11 +103,11 @@ const MyLearningProgress = () => {
                     </svg>
                     New Update
                 </button>
-            </header>
+            </div>
 
             <div className="controls-section">
                 <div className="search-container">
-                    <svg className="search-icon" width="12" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <circle cx="11" cy="11" r="8" />
                         <path d="M21 21l-4.35-4.35" />
                     </svg>
@@ -152,7 +149,7 @@ const MyLearningProgress = () => {
                     </button>
                 </div>
             ) : (
-                <div className="posts-grid">
+                <div className="posts-list">
                     {filteredPosts.map(post => (
                         <div key={post.id} className="post-card">
                             <div className="post-content">

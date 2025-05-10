@@ -198,9 +198,8 @@ const EditLearningProgress = () => {
     return (
         <div className="learning-container">
             <header className="learning-header">
-                <h1>MasteryHub</h1>
                 <h2>Edit Your Learning Progress</h2>
-                <p className="subtitle">Update your learning journey with the community</p>
+                <center><h3 className="subtitle">Update your learning journey with the community</h3></center>
             </header>
 
             <div className="progress-form">

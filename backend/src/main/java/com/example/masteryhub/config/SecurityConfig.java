@@ -78,7 +78,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000","http://localhost:3002", "http://100.120.106.127:1010"));
         config.setAllowCredentials(true);
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setExposedHeaders(List.of("Authorization"));
 
 

@@ -128,29 +128,6 @@ const LearningPlanList = () => {
                     New Plan
                 </button>
             </header>
-
-            <div className="controls-section">
-                <div className="search-container">
-                    <svg className="search-icon" width="12" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="M21 21l-4.35-4.35" />
-                    </svg>
-                </div>
-
-                <div className="filter-container">
-                    <select
-                        value={filterTag}
-                        onChange={(e) => setFilterTag(e.target.value)}
-                        className="filter-select"
-                    >
-                        <option value="">All Tags</option>
-                        {allTags.map(tag => (
-                            <option key={tag} value={tag}>{tag}</option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-
             {filteredPlans.length === 0 ? (
                 <div className="empty-state">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">

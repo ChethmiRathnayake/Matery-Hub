@@ -55,9 +55,9 @@ const Header = () => {
                             <FaPlusCircle className="nav-icon" />
                             Post
                         </Link>
-                        <Link to="/plans" className="nav-link">
+                        <Link to="/plan" className="nav-link">
                             <FaClipboardList className="nav-icon" />
-                            Plans
+                            Plan
                         </Link>
                         <Link to="/explore" className="nav-link">
                             <FaCompass className="nav-icon" />
