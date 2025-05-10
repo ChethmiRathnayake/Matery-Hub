@@ -137,7 +137,7 @@ const LearningPlanList = () => {
                     <p>{searchTerm || filterTag ? "Try adjusting your search filters" : "Start by creating your first learning plan"}</p>
                     <button
                         className="primary-button"
-                        onClick={() => navigate("/plans/new")}
+                        onClick={() => navigate("/plan")}
                     >
                         Create Your First Plan
                     </button>
