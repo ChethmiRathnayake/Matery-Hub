@@ -19,6 +19,8 @@ import PostDetails from "./pages/PostDetails";
 import OtherUserProfilePage from "./pages/OtherUserProfilePage";
 
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import ResetLinkSent from "./pages/ResetLinkSent"
 import FollowPage from "./pages/FollowPage"
 import MyLearningProgress from "./pages/MyLearningProgress";
 import EditLearningProgress from "./pages/EditLearningProgress";
@@ -41,6 +43,9 @@ function App() {
                 {/* Public Route: Sign-Up page */}
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/reset-link-sent" element={<ResetLinkSent />} />
+
 
                 <Route path="/unauthorized" element={<Unauthorized/>} />
                 {/* Protected Route: User Dashboard (only for logged-in users) */}

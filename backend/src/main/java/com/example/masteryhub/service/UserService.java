@@ -142,7 +142,7 @@ public class UserService {
         resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
         passwordResetTokenRepository.save(resetToken);
 
-        String resetLink = "http://100.120.106.127:1010/api/auth/reset-password?token=" + token;
+        String resetLink = "http://localhost:3000/reset-password?token=" + token;
         emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
 
         return "If the email exists, a reset link will be sent.";

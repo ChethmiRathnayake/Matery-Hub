@@ -16,17 +16,26 @@ const PostDialog = ({ post, onClose, isOwnProfile }) => {
         onClose();
     };
 
-    const imageUrl = post.mediaUrl ? `${BASE_URL}${post.mediaUrl}` : "";
+    const mediaUrl = post.mediaUrl ? `${BASE_URL}${post.mediaUrl}` : "";
+    const isVideo = post.mediaUrl && /\.(mp4|webm|ogg)$/i.test(post.mediaUrl);
 
     return (
         <Modal open={true} onClose={onClose}>
             <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md shadow-md w-[90%] sm:w-[400px]">
-                {imageUrl && (
-                    <img
-                        src={imageUrl}
-                        alt="Post"
-                        className="w-full h-64 object-cover rounded-md mb-4"
-                    />
+                {mediaUrl && (
+                    isVideo ? (
+                        <video
+                            src={mediaUrl}
+                            controls
+                            className="w-full h-64 object-cover rounded-md mb-4"
+                        />
+                    ) : (
+                        <img
+                            src={mediaUrl}
+                            alt="Post"
+                            className="w-full h-64 object-cover rounded-md mb-4"
+                        />
+                    )
                 )}
                 <p className="mb-4">{post.caption}</p>
 

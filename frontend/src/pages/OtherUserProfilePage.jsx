@@ -6,6 +6,8 @@ import useAxios from "../hooks/useAxios";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import ActivityTabs from "../components/ActivityTabs";
 import { useAuthContext } from "../hooks/useAuthContext";
+import SkillsSection from "../components/profile/SkillsSection";
+import InterestsSection from "../components/profile/InterestsSection";
 
 const OtherUserProfilePage = () => {
     const { profileId } = useParams();
@@ -57,6 +59,21 @@ const OtherUserProfilePage = () => {
                 )}
 
                 <ActivityTabs userId={profileId} isOwnProfile={false} />
+
+                {profile && (
+                    <>
+                        <SkillsSection
+                            skills={profile.skills}
+                            isOwnProfile={false}
+                            onUpdate={() => {}}
+                        />
+                        <InterestsSection
+                            interests={profile?.interests || []}
+                            isOwnProfile={false}
+                            onUpdate={() => {}}
+                        />
+                    </>
+                )}
             </div>
         </div>
     );

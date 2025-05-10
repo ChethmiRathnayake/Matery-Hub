@@ -2,13 +2,33 @@ import { useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import AuthHeader from "../components/AuthHeader";
 import AuthInput from "../components/AuthInput";
+import useAxios from "../hooks/useAxios";
+import axios from "../api/axios"
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
+    const { response: data, error, loading, axiosFetch } = useAxios();
+    const navigate = useNavigate();
 
-    const handleReset = (e) => {
+    const handleReset = async (e) => {
         e.preventDefault();
         console.log("Reset email sent to:", email);
+
+        await axiosFetch({
+            axiosInstance: axios,
+            method: "POST",
+            url: `/auth/forgot-password?forceResend=true`,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: { email },
+        });
+
+        // Redirect to the Reset Link Sent page if successful
+        if (!error) {
+            navigate(`/reset-link-sent?email=${encodeURIComponent(email)}`);
+        }
     };
 
     return (
