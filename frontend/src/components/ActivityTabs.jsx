@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for navigation
 import PostPreviewList from './PostPreviewList';
 
 const ActivityTabs = ({ userId, isOwnProfile }) => {
     const [activeTab, setActiveTab] = useState("posts");
+    const navigate = useNavigate(); // Initialize useNavigate hook for navigation
+
+    // Function to navigate to the learning progress feed
+    const navigateToLearningProgressFeed = () => {
+        navigate("/progress"); // Replace with your actual learning progress feed route
+    };
 
     return (
         <div className="mt-8 bg-neutral-100 p-6 rounded-2xl shadow-md">
@@ -31,7 +38,16 @@ const ActivityTabs = ({ userId, isOwnProfile }) => {
                 {activeTab === "posts" ? (
                     <PostPreviewList userId={userId} isOwnProfile={isOwnProfile} />
                 ) : (
-                    <div className="text-center text-gray-600">Coming soon...</div>
+                    <div className="text-center text-gray-600">
+                        <p>Coming soon...</p>
+                        {/* Button to navigate to learning progress feed */}
+                        <button
+                            onClick={navigateToLearningProgressFeed}
+                            className="mt-4 px-6 py-2 text-lg font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-300"
+                        >
+                            Go to Learning Progress Feed
+                        </button>
+                    </div>
                 )}
             </div>
         </div>

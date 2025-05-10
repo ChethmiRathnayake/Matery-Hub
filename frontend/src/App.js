@@ -8,8 +8,8 @@ import Test from './pages/test'
 import UserPage from "./pages/UserPage";
 import SignIn from "./pages/SignIn";
 import ProtectedRoute from "./components/ProtectedRoute";
-import LearningProgress from "./pages/LearningProgress"; // relative path from pages/
-import Layout from "./components/Layout"; //
+import LearningProgress from "./pages/LearningProgress";
+import Layout from "./components/Layout";
 import Unauthorized from "./pages/Unauthorized"
 import Profile from "./pages/Profile";
 
@@ -35,7 +35,7 @@ function App() {
     return (
 
             <Routes>
-                {/* Public Route: Default home page */}
+
                 <Route
                     path="/"
                     element={<Layout><Home /></Layout>} />
@@ -118,7 +118,7 @@ function App() {
                       <Route path="/post/:id" element={<Layout><PostDetails /></Layout>} />
 
 
-                {/* Optionally add more protected routes for other roles (e.g., admin) */}
+
                 {/* <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} roles={['ROLE_ADMIN']} />} /> */}
             </Routes>
 
