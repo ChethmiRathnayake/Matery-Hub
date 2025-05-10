@@ -2,18 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "../api/axios";
 import PostDialog from "./PostDialog";
 
-
-
 const BASE_URL = "http://localhost:1010";
+
 const PostPreviewList = ({ userId, isOwnProfile }) => {
     const [posts, setPosts] = useState([]);
     const [showAll, setShowAll] = useState(false);
     const [selectedPost, setSelectedPost] = useState(null);
-
-
-
-
-
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -33,7 +27,8 @@ const PostPreviewList = ({ userId, isOwnProfile }) => {
         <div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {recentPosts.map((post) => {
-                    const imageUrl = post.mediaUrl ? `${BASE_URL}${post.mediaUrl}` : "";
+                    const mediaUrl = post.mediaUrl ? `${BASE_URL}${post.mediaUrl}` : "";
+                    const isVideo = post.mediaUrl && /\.(mp4|webm|ogg)$/i.test(post.mediaUrl);
 
                     return (
                         <div
@@ -41,16 +36,25 @@ const PostPreviewList = ({ userId, isOwnProfile }) => {
                             onClick={() => setSelectedPost(post)}
                             className="cursor-pointer"
                         >
-                            <img
-                                src={imageUrl}
-                                alt="Post"
-                                className="w-full h-40 object-cover rounded-md"
-                            />
+                            {isVideo ? (
+                                <video
+                                    src={mediaUrl}
+                                    className="w-full h-40 object-cover rounded-md"
+                                    muted
+                                    autoPlay
+                                    loop
+                                />
+                            ) : (
+                                <img
+                                    src={mediaUrl}
+                                    alt="Post"
+                                    className="w-full h-40 object-cover rounded-md"
+                                />
+                            )}
                             <p className="mt-2 text-sm">{post.caption}</p>
                         </div>
                     );
                 })}
-
             </div>
 
             {posts.length > 3 && (

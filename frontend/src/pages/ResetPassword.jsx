@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import AuthLayout from "../components/AuthLayout";
 import AuthHeader from "../components/AuthHeader";
 import AuthInput from "../components/AuthInput";
@@ -6,14 +9,39 @@ import AuthInput from "../components/AuthInput";
 const ResetPassword = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [token, setToken] = useState("");
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
-    const handleReset = (e) => {
+    useEffect(() => {
+        const tokenFromURL = searchParams.get("token");
+        if (tokenFromURL) {
+            setToken(tokenFromURL);
+        } else {
+            alert("Invalid or missing reset token.");
+            navigate("/signin");
+        }
+    }, [searchParams, navigate]);
+
+    const handleReset = async (e) => {
         e.preventDefault();
         if (newPassword !== confirmPassword) {
             alert("Passwords do not match");
             return;
         }
-        console.log("Password reset to:", newPassword);
+
+        try {
+            const response = await axios.post(
+                `http://100.120.106.127:1010/api/auth/reset-password?token=${token}`,
+                { newPassword }
+            );
+            alert(response.data); // e.g., "Password reset successful!"
+            navigate("/login");
+        } catch (error) {
+            alert(
+                error.response?.data || "An error occurred while resetting the password."
+            );
+        }
     };
 
     return (
@@ -51,7 +79,7 @@ const ResetPassword = () => {
                 </button>
 
                 <div className="mt-6 text-center text-sm text-gray-600">
-                    <a href="/signin" className="text-indigo-500 hover:underline">
+                    <a href="/login" className="text-indigo-500 hover:underline">
                         Back to Login
                     </a>
                 </div>
